@@ -1,43 +1,52 @@
+"""
+Placeholder
+"""
+
 import sys
 import pygame
-import os
 
 from classes import enemy
 from classes import player
 from classes import indicator
+from classes import state
 
-black = 0, 0, 0
-white = 255, 255, 255
+BLACK = 0, 0, 0
 size = width, height = 500, 500
-pixelSize = 16
-fontSize = 16
+PIXEL_SIZE = 16
+FONT_SIZE = 16
 
-upKey = 273
-downKey = 274
-rightKey = 275
-leftKey = 276
-enterKey = 13
+msg_width = 80 
+msg_height = 80
 
+UP_KEY = 273
+DOWN_KEY = 274
+RIGHT_KEY = 275
+LEFT_KEY = 276
+ENTER_KEY = 13
+
+playerPos = (2, 2)
+enemyPositions = [(1, 4), (4, 4)]
+indicatorPos = (0, 0)
+
+STATE = state.State()
+
+# Anything Pygame related has to be used after the init() line
 pygame.init()
 screen = pygame.display.set_mode(size)
 
-playerPos = { "x": 2, "y": 2 }
-enemyPositions = [ { "x": 1, "y": 4 }, { "x": 4, "y": 4 } ]
-indicatorPos = { "x": 0, "y": 0 }
+_player = player.Player(playerPos, True)
+indicator = indicator.Indicator(indicatorPos, True)
 
 enemys = []
 for position in enemyPositions:
-    enemys.append(enemy.Enemy(position))
-
-player = player.Player(playerPos)
-indicator = indicator.Indicator(indicatorPos)
+    enemys.append(enemy.Enemy(position, False))
 
 ter_plain = pygame.image.load("data/green.png").convert()
 ter_mount = pygame.image.load("data/brown.png").convert()
 
-font = pygame.font.Font(None, fontSize)
+FONT = pygame.font.Font(None, FONT_SIZE)
 
-background = [
+MAP_TERRAIN = [
     [ter_mount, ter_mount, ter_mount, ter_mount, ter_mount],
     [ter_mount, ter_plain, ter_plain, ter_plain, ter_mount],
     [ter_mount, ter_plain, ter_plain, ter_plain, ter_mount],
@@ -45,7 +54,7 @@ background = [
     [ter_mount, ter_plain, ter_plain, ter_plain, ter_plain]
 ]
 
-units = [
+UNITS = [
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0],
@@ -54,116 +63,140 @@ units = [
 ]
 
 
-def initScreen(screen, screenArray):
+def init_screen(map_array):
     y_coord = 0
-    for y in screenArray:
+    for row in map_array:
         x_coord = 0
-        for x in y:
-            screen.blit(x, (y_coord, x_coord))
-            x_coord += pixelSize
-        y_coord += pixelSize
+        for col in row:
+            screen.blit(col, (y_coord, x_coord))
+            x_coord += PIXEL_SIZE
+        y_coord += PIXEL_SIZE
         pygame.display.update()
 
 
-def moveIcon(oldIconPos, newIconPos, icon):
-    screen.blit(background[oldIconPos["x"]][oldIconPos["y"]], (oldIconPos["x"]*pixelSize, oldIconPos["y"]*pixelSize))
-    screen.blit(icon, (newIconPos["x"]*pixelSize, newIconPos["y"]*pixelSize))
-    if (oldIconPos == player.position):
-        screen.blit(player.image, (player.position["x"]*pixelSize, player.position["y"]*pixelSize))
-    if (oldIconPos == enemys[0].position):
-        screen.blit(enemys[0].image, (enemys[0].position["x"]*pixelSize, enemys[0].position["y"]*pixelSize))
+def move_indicator():
+    screen.blit(MAP_TERRAIN[indicator.prev_position.x][indicator.prev_position.y], (indicator.prev_position.x * PIXEL_SIZE, indicator.prev_position.y * PIXEL_SIZE))
+    if not UNITS[indicator.prev_position.x][indicator.prev_position.y] == 0:
+        screen.blit(UNITS[indicator.prev_position.x][indicator.prev_position.y].image, (indicator.prev_position.x * PIXEL_SIZE, indicator.prev_position.y * PIXEL_SIZE))
+
+    screen.blit(MAP_TERRAIN[indicator.position.x][indicator.position.y], (indicator.position.x * PIXEL_SIZE, indicator.position.y * PIXEL_SIZE))
+    if not UNITS[indicator.position.x][indicator.position.y] == 0:
+        screen.blit(UNITS[indicator.position.x][indicator.position.y].image, (indicator.position.x * PIXEL_SIZE, indicator.position.y * PIXEL_SIZE))
+
+    screen.blit(indicator.image, (indicator.position.x * PIXEL_SIZE, indicator.position.y * PIXEL_SIZE))
     pygame.display.update()
 
 
-def displayUnitInfo(hp, maxhp, strength, defense):
-    if hp:
-        info = [
-            'HP: {hp} / {maxhp}'.format(hp = hp, maxhp = maxhp),
-            'STR: {str}'.format(str = strength),
-            'DEF: {defense}'.format(defense = defense)
-        ]
-        x = 80 # magic number please fix
-        y = 0
-        for line in info:
-            screen.blit(font.render(line, 1, (200, 200, 200)), (x, y))
-            y += (fontSize + 4)
+def update_unit_location():
+    UNITS[indicator.position.x][indicator.position.y] = UNITS[indicator.prev_position.x][indicator.prev_position.y]
+    UNITS[indicator.prev_position.x][indicator.prev_position.y] = 0
+
+def display_unit_info(stats):
+    info = [
+        'HP: {hp} / {maxhp}'.format(hp=stats.current_hp,
+                                    maxhp=stats.max_hp),
+        'STR: {str}'.format(str=stats.strength),
+        'DEF: {defense}'.format(defense=stats.defense)
+    ]
+    x_offset = len(UNITS[0]) * PIXEL_SIZE
+    y_offset = 0
+    for line in info:
+        screen.blit(FONT.render(line, 1, (200, 200, 200)), (x_offset, y_offset))
+        y_offset += (FONT_SIZE + 4)
     pygame.display.update()
-    
 
-def clearUnitInfo():
-    pygame.draw.rect(screen, black, [80, 0, 80, 80], 0) # fix these magic numbers
-    pygame.display.flip()
 
-initScreen(screen, background)
+def clear_unit_info():
+    x_offset = len(MAP_TERRAIN[0]) * PIXEL_SIZE
+    pygame.draw.rect(screen, BLACK, [x_offset, 0, msg_width, msg_height], 0)
 
-screen.blit(indicator.image, (indicator.position["x"]*pixelSize, indicator.position["y"]*pixelSize))
-units[player.position["x"]][player.position["y"]] = player
+
+def update_unit_info():
+    if UNITS[indicator.position.x][indicator.position.y] == 0:
+        clear_unit_info()
+    else:
+        display_unit_info(UNITS[indicator.position.x][indicator.position.y].stats)
+
+
+def event_handler(event_to_handle):
+    if event_to_handle.type == pygame.QUIT:
+        end_game('Game Over')
+
+    elif event_to_handle.type == pygame.KEYUP:
+        # print(event_to_handle.key)
+        if event_to_handle.key == UP_KEY:
+            if not indicator.position.y - 1 < 0:
+                indicator.up()
+                STATE.update_flag = True
+                if STATE.player_moving_flag:
+                    _player.up()
+                    update_unit_location()
+        elif event_to_handle.key == DOWN_KEY:
+            if not indicator.position.y + 1 > 4:
+                indicator.down()
+                STATE.update_flag = True
+                if STATE.player_moving_flag:
+                    _player.down()
+                    update_unit_location()
+        elif event_to_handle.key == RIGHT_KEY:
+            if not indicator.position.x + 1 > 4:
+                indicator.right()
+                STATE.update_flag = True
+                if STATE.player_moving_flag:
+                    _player.right()
+                    update_unit_location()
+        elif event_to_handle.key == LEFT_KEY:
+            if not indicator.position.x - 1 < 0:
+                indicator.left()
+                STATE.update_flag = True
+                if STATE.player_moving_flag:
+                    _player.left()
+                    update_unit_location()
+        elif event_to_handle.key == ENTER_KEY:
+            print(STATE.player_moving_flag)
+            if STATE.player_moving_flag:
+                STATE.player_moving_flag = False
+            else:
+                if type(UNITS[indicator.position.x][indicator.position.y]) == player.Player:
+                    STATE.player_moving_flag = True
+
+
+def check_for_win():
+    if _player.position.x == enemys[0].position.x and _player.position.y == enemys[0].position.y:
+        STATE.player_won = True
+
+
+def end_game(msg):
+    print(msg)
+    sys.exit()
+
+
+init_screen(MAP_TERRAIN)
+
+screen.blit(indicator.image, (indicator.position.x * PIXEL_SIZE, indicator.position.y * PIXEL_SIZE))
+UNITS[_player.position.x][_player.position.y] = _player
 for enemy in enemys:
-    units[enemy.position["x"]][enemy.position["y"]] = enemy
+    UNITS[enemy.position.x][enemy.position.y] = enemy
 
-for rows in units:
-    for square in rows:
-        if not square == 0:
-            screen.blit(square.image, (square.position["x"]*pixelSize, square.position["y"]*pixelSize))
+for rows in UNITS:
+    for column in rows:
+        if not column == 0:
+            screen.blit(
+                column.image, (column.position.x * PIXEL_SIZE, column.position.y * PIXEL_SIZE))
 
 
 pygame.display.update()
 
-playerMovingFlag = False
-
 while 1:
-    updateFlag = False
-    oldPlayerPos = dict(player.position)
-    oldIndicatorPos = dict(indicator.position)
+    if STATE.player_won:
+        end_game('You Win')
 
-    # TODO: Separate into event handler functions
+    STATE.update_flag = False
+
     for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            sys.exit()
-        elif event.type == pygame.KEYUP:
-            # print(event.key)
-            if event.key == upKey:
-                if not indicator.position["y"] + -1 < 0:
-                    indicator.up()
-                    updateFlag = True
-                    if (playerMovingFlag):
-                        player.up()
-            elif event.key == downKey:
-                if not indicator.position["y"] + 1 > 4:
-                    indicator.down()
-                    updateFlag = True
-                    if (playerMovingFlag):
-                        player.down()
-            elif event.key == rightKey:
-                if not indicator.position["x"] + 1 > 4:
-                    indicator.right()
-                    updateFlag = True
-                    if (playerMovingFlag):
-                        player.right()
-            elif event.key == leftKey:
-                if not indicator.position["x"] + -1 < 0:
-                    indicator.left()
-                    updateFlag = True
-                    if (playerMovingFlag):
-                        player.left()
-            elif event.key == enterKey:
-                if (playerMovingFlag):
-                    playerMovingFlag = False
-                else:
-                    if indicator.position == player.position:
-                        playerMovingFlag = True
+        event_handler(event)
 
-    if updateFlag:
-        if player.position == enemys[0].position:
-            print('You win')
-            sys.exit()
-        else:
-            if (playerMovingFlag):
-                moveIcon(oldPlayerPos, player.position, player.image)
-            moveIcon(oldIndicatorPos, indicator.position, indicator.image)
-
-        # TODO Separate out into functions
-        if units[indicator.position["x"]][indicator.position["y"]] == 0:
-            clearUnitInfo()
-        else:
-            displayUnitInfo(**units[indicator.position["x"]][indicator.position["y"]].getStats())
+    if STATE.update_flag:
+        check_for_win()
+        move_indicator()
+        update_unit_info()
