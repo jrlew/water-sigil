@@ -9,14 +9,16 @@ from classes import enemy
 from classes import player
 from classes import indicator
 from classes import state
+from classes import terrain
 
 BLACK = 0, 0, 0
 size = width, height = 500, 500
 PIXEL_SIZE = 16
 FONT_SIZE = 16
 
+# TODO: change these to be info_pane_width and info_pane_height
 msg_width = 80 
-msg_height = 80
+msg_height = 160
 
 UP_KEY = 273
 DOWN_KEY = 274
@@ -45,8 +47,11 @@ enemys = []
 for position in enemyPositions:
     enemys.append(enemy.Enemy(position, False))
 
-ter_plain = pygame.image.load("data/green.png").convert()
-ter_mount = pygame.image.load("data/brown.png").convert()
+# ter_plain = pygame.image.load("data/green.png").convert()
+# ter_mount = pygame.image.load("data/brown.png").convert()
+
+ter_plain = terrain.Terrain("Plain", "../data/green.png", 0 , 0)
+ter_mount = terrain.Terrain("Mountain", "../data/brown.png", 2, 20) 
 
 FONT = pygame.font.Font(None, FONT_SIZE)
 
@@ -72,24 +77,25 @@ def init_screen(map_array):
     for row in map_array:
         x_coord = 0
         for col in row:
-            screen.blit(col, (x_coord, y_coord))
+            screen.blit(col.image, (x_coord, y_coord))
             x_coord += PIXEL_SIZE
         y_coord += PIXEL_SIZE
         pygame.display.update()
 
 
-# X, Y from are reversed when using 2D array notation
 def render_unit(unit):
     screen.blit(unit.image, (unit.position.x * PIXEL_SIZE, unit.position.y * PIXEL_SIZE))
 
 
-def move_indicator():
-    screen.blit(MAP_TERRAIN[indicator.prev_position.y][indicator.prev_position.x], (indicator.prev_position.x * PIXEL_SIZE, indicator.prev_position.y * PIXEL_SIZE)) # TODO move terrain into a class so it can use render_unit()
+def move_indicator():    
+    screen.blit(MAP_TERRAIN[indicator.prev_position.y][indicator.prev_position.x].image, 
+(indicator.prev_position.x * PIXEL_SIZE, indicator.prev_position.y * PIXEL_SIZE)) # TODO move terrain into a class so it can use render_unit()
     if not UNITS[indicator.prev_position.y][indicator.prev_position.x] == 0:
         render_unit(UNITS[indicator.prev_position.y][indicator.prev_position.x])
         # screen.blit(UNITS[indicator.prev_position.x][indicator.prev_position.x].image, (indicator.prev_position.x * PIXEL_SIZE, indicator.prev_position.y * PIXEL_SIZE))
 
-    screen.blit(MAP_TERRAIN[indicator.position.y][indicator.position.x], (indicator.position.x * PIXEL_SIZE, indicator.position.y * PIXEL_SIZE)) # TODO move terrain into a class so it can use render_unit()
+    screen.blit(MAP_TERRAIN[indicator.position.y][indicator.position.x].image, (indicator.position.x * PIXEL_SIZE, 
+indicator.position.y * PIXEL_SIZE)) # TODO move terrain into a class so it can use render_unit()
     if not UNITS[indicator.position.y][indicator.position.x] == 0:
         render_unit(UNITS[indicator.position.y][indicator.position.x])
         # screen.blit(UNITS[indicator.position.y][indicator.position.x].image, (indicator.position.x * PIXEL_SIZE, indicator.position.y * PIXEL_SIZE))
@@ -118,15 +124,28 @@ def display_unit_info(stats):
     pygame.display.update()
 
 
-def clear_unit_info():
+def clear_info_pane():
     x_offset = len(MAP_TERRAIN[0]) * PIXEL_SIZE
     pygame.draw.rect(screen, BLACK, [x_offset, 0, msg_width, msg_height], 0)
 
 
+def display_terrain_info():
+    terrain = MAP_TERRAIN[indicator.position.y][indicator.position.x]
+    terrain_info = [
+        "{type}".format(type = terrain.type),
+        "Def: {def_adjustment}".format(def_adjustment = terrain.def_adjustment),
+        "Evd: {evasion_adjustment}".format(evasion_adjustment = terrain.evasion_adjustment),
+    ]
+    x_offset = len(UNITS[0]) * PIXEL_SIZE
+    y_offset = 80
+    for line in terrain_info:
+        screen.blit(FONT.render(line, 1, (200, 200, 200)), (x_offset, y_offset))
+        y_offset += (FONT_SIZE + 4)
+    pygame.display.update()
+
+
 def update_unit_info():
-    if UNITS[indicator.position.y][indicator.position.x] == 0:
-        clear_unit_info()
-    else:
+    if not UNITS[indicator.position.y][indicator.position.x] == 0:
         display_unit_info(UNITS[indicator.position.y][indicator.position.x].stats)
 
 
@@ -223,5 +242,7 @@ while 1:
 
     if STATE.update_flag:
         # check_for_win()
+        clear_info_pane()
         move_indicator()
         update_unit_info()
+        display_terrain_info()
