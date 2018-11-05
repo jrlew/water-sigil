@@ -5,7 +5,8 @@ Placeholder
 import pygame
 
 
-class Unit(pygame.sprite.Sprite):
+# class Unit(pygame.sprite.Sprite):
+class Unit():
     def __init__(self, init_pos_tuple, _is_player):
         # pygame.sprite.Sprite()
         self.is_player = _is_player
@@ -13,9 +14,10 @@ class Unit(pygame.sprite.Sprite):
         self.prev_position = Position(init_pos_tuple)
         self.stats = Stats()
 
+    # Reverse of what you would expect because 2D is reversed compared to cartesian coordinates starting top left
     def up(self):
         self.update_prev_position()
-        self.position.y += -1
+        self.position.y -= 1
 
     def down(self):
         self.update_prev_position()
@@ -23,7 +25,7 @@ class Unit(pygame.sprite.Sprite):
 
     def left(self):
         self.update_prev_position()
-        self.position.x += -1
+        self.position.x -= 1
 
     def right(self):
         self.update_prev_position()

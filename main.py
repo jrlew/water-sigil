@@ -24,7 +24,7 @@ RIGHT_KEY = 275
 LEFT_KEY = 276
 ENTER_KEY = 13
 
-playerPos = (2, 2)
+playerPositions = [(2, 2), (3, 2)] 
 enemyPositions = [(1, 4), (4, 4)]
 indicatorPos = (0, 0)
 
@@ -34,7 +34,11 @@ STATE = state.State()
 pygame.init()
 screen = pygame.display.set_mode(size)
 
-_player = player.Player(playerPos, True)
+players = []
+for position in playerPositions:
+    players.append(player.Player(position, True))
+# _player = player.Player(playerPos, True)
+
 indicator = indicator.Indicator(indicatorPos, True)
 
 enemys = []
@@ -68,28 +72,36 @@ def init_screen(map_array):
     for row in map_array:
         x_coord = 0
         for col in row:
-            screen.blit(col, (y_coord, x_coord))
+            screen.blit(col, (x_coord, y_coord))
             x_coord += PIXEL_SIZE
         y_coord += PIXEL_SIZE
         pygame.display.update()
 
 
+# X, Y from are reversed when using 2D array notation
+def render_unit(unit):
+    screen.blit(unit.image, (unit.position.x * PIXEL_SIZE, unit.position.y * PIXEL_SIZE))
+
+
 def move_indicator():
-    screen.blit(MAP_TERRAIN[indicator.prev_position.x][indicator.prev_position.y], (indicator.prev_position.x * PIXEL_SIZE, indicator.prev_position.y * PIXEL_SIZE))
-    if not UNITS[indicator.prev_position.x][indicator.prev_position.y] == 0:
-        screen.blit(UNITS[indicator.prev_position.x][indicator.prev_position.y].image, (indicator.prev_position.x * PIXEL_SIZE, indicator.prev_position.y * PIXEL_SIZE))
+    screen.blit(MAP_TERRAIN[indicator.prev_position.y][indicator.prev_position.x], (indicator.prev_position.x * PIXEL_SIZE, indicator.prev_position.y * PIXEL_SIZE)) # TODO move terrain into a class so it can use render_unit()
+    if not UNITS[indicator.prev_position.y][indicator.prev_position.x] == 0:
+        render_unit(UNITS[indicator.prev_position.y][indicator.prev_position.x])
+        # screen.blit(UNITS[indicator.prev_position.x][indicator.prev_position.x].image, (indicator.prev_position.x * PIXEL_SIZE, indicator.prev_position.y * PIXEL_SIZE))
 
-    screen.blit(MAP_TERRAIN[indicator.position.x][indicator.position.y], (indicator.position.x * PIXEL_SIZE, indicator.position.y * PIXEL_SIZE))
-    if not UNITS[indicator.position.x][indicator.position.y] == 0:
-        screen.blit(UNITS[indicator.position.x][indicator.position.y].image, (indicator.position.x * PIXEL_SIZE, indicator.position.y * PIXEL_SIZE))
+    screen.blit(MAP_TERRAIN[indicator.position.y][indicator.position.x], (indicator.position.x * PIXEL_SIZE, indicator.position.y * PIXEL_SIZE)) # TODO move terrain into a class so it can use render_unit()
+    if not UNITS[indicator.position.y][indicator.position.x] == 0:
+        render_unit(UNITS[indicator.position.y][indicator.position.x])
+        # screen.blit(UNITS[indicator.position.y][indicator.position.x].image, (indicator.position.x * PIXEL_SIZE, indicator.position.y * PIXEL_SIZE))
 
-    screen.blit(indicator.image, (indicator.position.x * PIXEL_SIZE, indicator.position.y * PIXEL_SIZE))
+    render_unit(indicator)
+    # screen.blit(indicator.image, (indicator.position.x * PIXEL_SIZE, indicator.position.y * PIXEL_SIZE))
     pygame.display.update()
 
 
 def update_unit_location():
-    UNITS[indicator.position.x][indicator.position.y] = UNITS[indicator.prev_position.x][indicator.prev_position.y]
-    UNITS[indicator.prev_position.x][indicator.prev_position.y] = 0
+    UNITS[indicator.position.y][indicator.position.x] = UNITS[indicator.prev_position.y][indicator.prev_position.x]
+    UNITS[indicator.prev_position.y][indicator.prev_position.x] = 0
 
 def display_unit_info(stats):
     info = [
@@ -112,10 +124,10 @@ def clear_unit_info():
 
 
 def update_unit_info():
-    if UNITS[indicator.position.x][indicator.position.y] == 0:
+    if UNITS[indicator.position.y][indicator.position.x] == 0:
         clear_unit_info()
     else:
-        display_unit_info(UNITS[indicator.position.x][indicator.position.y].stats)
+        display_unit_info(UNITS[indicator.position.y][indicator.position.x].stats)
 
 
 def event_handler(event_to_handle):
@@ -129,41 +141,41 @@ def event_handler(event_to_handle):
                 indicator.up()
                 STATE.update_flag = True
                 if STATE.player_moving_flag:
-                    _player.up()
+                    UNITS[indicator.prev_position.y][indicator.prev_position.x].up()
                     update_unit_location()
         elif event_to_handle.key == DOWN_KEY:
             if not indicator.position.y + 1 > 4:
                 indicator.down()
                 STATE.update_flag = True
                 if STATE.player_moving_flag:
-                    _player.down()
+                    UNITS[indicator.prev_position.y][indicator.prev_position.x].down()
                     update_unit_location()
         elif event_to_handle.key == RIGHT_KEY:
             if not indicator.position.x + 1 > 4:
                 indicator.right()
                 STATE.update_flag = True
                 if STATE.player_moving_flag:
-                    _player.right()
+                    UNITS[indicator.prev_position.y][indicator.prev_position.x].right()
                     update_unit_location()
         elif event_to_handle.key == LEFT_KEY:
             if not indicator.position.x - 1 < 0:
                 indicator.left()
                 STATE.update_flag = True
                 if STATE.player_moving_flag:
-                    _player.left()
+                    UNITS[indicator.prev_position.y][indicator.prev_position.x].left()
                     update_unit_location()
         elif event_to_handle.key == ENTER_KEY:
             print(STATE.player_moving_flag)
             if STATE.player_moving_flag:
                 STATE.player_moving_flag = False
             else:
-                if type(UNITS[indicator.position.x][indicator.position.y]) == player.Player:
+                if type(UNITS[indicator.position.y][indicator.position.x]) == player.Player:
                     STATE.player_moving_flag = True
 
-
-def check_for_win():
-    if _player.position.x == enemys[0].position.x and _player.position.y == enemys[0].position.y:
-        STATE.player_won = True
+# TODO change this to check for enemies to be 0
+# def check_for_win():
+#     if _player.position.x == enemys[0].position.x and _player.position.y == enemys[0].position.y:
+#         STATE.player_won = True
 
 
 def end_game(msg):
@@ -173,19 +185,32 @@ def end_game(msg):
 
 init_screen(MAP_TERRAIN)
 
-screen.blit(indicator.image, (indicator.position.x * PIXEL_SIZE, indicator.position.y * PIXEL_SIZE))
-UNITS[_player.position.x][_player.position.y] = _player
-for enemy in enemys:
-    UNITS[enemy.position.x][enemy.position.y] = enemy
+render_unit(indicator)
+# screen.blit(indicator.image, (indicator.position.x * PIXEL_SIZE, indicator.position.y * PIXEL_SIZE))
 
-for rows in UNITS:
-    for column in rows:
-        if not column == 0:
-            screen.blit(
-                column.image, (column.position.x * PIXEL_SIZE, column.position.y * PIXEL_SIZE))
+for _player in players:
+    UNITS[_player.position.y][_player.position.x] = _player
+    render_unit(_player)
+    # screen.blit(_player.image, (_player.position.y * PIXEL_SIZE, _player.position.x * PIXEL_SIZE))
+
+for enemy in enemys:
+    UNITS[enemy.position.y][enemy.position.x] = enemy
+    render_unit(enemy)
+    # screen.blit(enemy.image, (enemy.position.y * PIXEL_SIZE, enemy.position.x * PIXEL_SIZE))
+
+# for rows in UNITS:
+#     for column in rows:
+#         if not column == 0:
+#             screen.blit(column.image, (column.position.x * PIXEL_SIZE, column.position.y * PIXEL_SIZE))
 
 
 pygame.display.update()
+
+for rows in MAP_TERRAIN:
+    print(rows)
+
+for rows in UNITS:
+    print(rows)
 
 while 1:
     if STATE.player_won:
@@ -197,6 +222,6 @@ while 1:
         event_handler(event)
 
     if STATE.update_flag:
-        check_for_win()
+        # check_for_win()
         move_indicator()
         update_unit_info()
