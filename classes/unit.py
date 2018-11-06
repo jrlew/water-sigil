@@ -2,7 +2,7 @@
 Placeholder
 """
 
-import pygame
+# import pygame
 
 
 # class Unit(pygame.sprite.Sprite):
@@ -14,7 +14,6 @@ class Unit():
         self.prev_position = Position(init_pos_tuple)
         self.stats = Stats()
 
-    # Reverse of what you would expect because 2D is reversed compared to cartesian coordinates starting top left
     def up(self):
         self.update_prev_position()
         self.position.y -= 1
