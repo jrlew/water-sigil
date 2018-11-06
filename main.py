@@ -184,11 +184,18 @@ def display_context_message(msg_text):
 
 
 # TODO: This is pretty gross
-def checkForEnemyDeath(unit, y_index, x_index):
+def check_for_unit_death(unit):
     if unit.stats.current_hp < 1:
-        UNITS[y_index][x_index] = 0
+        UNITS[unit.position.y][unit.position.x] = 0
         enemys.pop() # TODO: This is real dirty and should be done better
-        screen.blit(MAP_TERRAIN[y_index][x_index].image, (x_index* PIXEL_SIZE, y_index * PIXEL_SIZE))
+        screen.blit(MAP_TERRAIN[unit.position.y][unit.position.x].image, (unit.position.x * PIXEL_SIZE, unit.position.y * PIXEL_SIZE))
+
+
+def attack(attacking_unit, defending_unit):
+    defending_unit.stats.current_hp -= attacking_unit.stats.strength - defending_unit.stats.defense
+    display_context_message("Attacking Enemy. Remaining HP: {hp}".format(hp=defending_unit.stats.current_hp))
+                
+    check_for_unit_death(UNITS[defending_unit.position.y][defending_unit.position.x])
 
 
 def event_handler(event_to_handle):
@@ -200,9 +207,7 @@ def event_handler(event_to_handle):
         if event_to_handle.key == UP_KEY:
             # TODO Functionify this, figure out check for enemy instead of not 0, add attack checks to all movements options
             if STATE.player_moving_flag and not UNITS[indicator.position.y - 1][indicator.position.x] == 0:
-                UNITS[indicator.position.y - 1][indicator.position.x].stats.current_hp -= UNITS[indicator.position.y][indicator.position.x].stats.strength
-                display_context_message("Attacked Enemy. Remaining HP: {remaining_hp}".format(remaining_hp=UNITS[indicator.position.y - 1][indicator.position.x].stats.current_hp))
-                checkForEnemyDeath(UNITS[indicator.position.y - 1][indicator.position.x], indicator.position.y - 1, indicator.position.x)
+                attack(UNITS[indicator.position.y][indicator.position.x], UNITS[indicator.position.y - 1][indicator.position.x])
                 STATE.update_flag = True
             elif not indicator.position.y - 1 < 0:
                 indicator.up()
