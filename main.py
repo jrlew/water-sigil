@@ -20,20 +20,16 @@ WHITE = 255, 255, 255
 size = width, height = 480, 360
 PIXEL_SIZE = 32
 FONT_SIZE = 24
-
-# TODO: change these to be info_pane_width and info_pane_height
 MSG_WIDTH = 150
 MSG_HEIGHT = 120
 
-state = State()
-
 screen = pygame.display.set_mode(size)
-FONT = pygame.font.Font(None, FONT_SIZE)
-
-indicatorPos = (0, 0)
-indicator = Indicator(indicatorPos)
-
+state = State()
 level = Intro()
+
+indicator = Indicator((0, 0))
+
+FONT = pygame.font.Font(None, FONT_SIZE)
 
 UNITS_LEN = len(level.units[0])
 INFO_PANE_X_OFFSET = UNITS_LEN * PIXEL_SIZE
@@ -52,14 +48,16 @@ def render_unit(unit):
     screen.blit(unit.image, (unit.position.x * PIXEL_SIZE, unit.position.y * PIXEL_SIZE))
 
 
+def render_terrain(terrain, x_coord, y_coord):
+    screen.blit(terrain.image, (x_coord * PIXEL_SIZE, y_coord * PIXEL_SIZE))
+
+
 def move_indicator():
-     # TODO move terrain into a class so it can use render_unit()
-    screen.blit(level.terrain[indicator.prev_position.y][indicator.prev_position.x].image, (indicator.prev_position.x * PIXEL_SIZE, indicator.prev_position.y * PIXEL_SIZE))
+    render_terrain(level.terrain[indicator.prev_position.y][indicator.prev_position.x], indicator.prev_position.x, indicator.prev_position.y)
     if not level.units[indicator.prev_position.y][indicator.prev_position.x] == 0:
         render_unit(level.units[indicator.prev_position.y][indicator.prev_position.x])
 
-    # TODO move terrain into a class so it can use render_unit()
-    screen.blit(level.terrain[indicator.position.y][indicator.position.x].image, (indicator.position.x * PIXEL_SIZE, indicator.position.y * PIXEL_SIZE))
+    render_terrain(level.terrain[indicator.position.y][indicator.position.x], indicator.position.x, indicator.position.y)
     if not level.units[indicator.position.y][indicator.position.x] == 0:
         render_unit(level.units[indicator.position.y][indicator.position.x])
 

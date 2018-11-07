@@ -3,7 +3,8 @@ Placeholder
 """
 
 from .level import Level
-from ..terrain import Terrain
+from ..terrain.plain import Plain
+from ..terrain.mount import Mount
 from ..player import Player
 from ..enemy import Enemy
 
@@ -11,11 +12,12 @@ from ..enemy import Enemy
 
 class Intro(Level):
     def __init__(self):
-        # TODO:This is gross and things need to be reorganized
-        PLAIN = Terrain("Plain", "../data/images/green.png", 0, 0)
-        MOUNT = Terrain("Mountain", "../data/images/brown.png", 2, 20)
+        # TODO: this is kinda gross. Tiles Classes that has the possiblities pre-instantiated?
+        PLAIN = Plain()
+        MOUNT = Mount()
 
-        playerPositions = [(2, 2), (3, 2)] 
+        # TODO: This is going to get complicated and messy once it expands varied types on units...
+        playerPositions = [(2, 2), (3, 2)]
         enemyPositions = [(1, 4), (4, 4)]
 
         players = []
