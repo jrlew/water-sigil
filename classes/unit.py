@@ -2,14 +2,9 @@
 Placeholder
 """
 
-# import pygame
 
-
-# class Unit(pygame.sprite.Sprite):
 class Unit():
-    def __init__(self, init_pos_tuple, _is_player):
-        # pygame.sprite.Sprite()
-        self.is_player = _is_player
+    def __init__(self, init_pos_tuple):
         self.position = Position(init_pos_tuple)
         self.prev_position = Position(init_pos_tuple)
         self.stats = Stats()
@@ -37,10 +32,13 @@ class Unit():
 
 class Stats():
     def __init__(self):
+        self.name = "Placeholder"
         self.max_hp = 20
         self.current_hp = 18
         self.strength = 6
         self.defense = 3
+        self.accuracy = 110
+        self.evasion = 20
 
 
 class Position():

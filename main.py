@@ -3,13 +3,17 @@ Placeholder
 """
 
 import sys
+from random import randint
 import pygame
 
-from classes import enemy
-from classes import player
-from classes import indicator
-from classes import state
-from classes import terrain
+from classes.enemy import Enemy
+from classes.player import Player
+from classes.indicator import Indicator
+from classes.state import State
+from classes.levels.intro import Intro
+
+# Everything Pygame related has be below this line
+pygame.init()
 
 BLACK = 0, 0, 0
 WHITE = 255, 255, 255
@@ -21,66 +25,18 @@ FONT_SIZE = 24
 MSG_WIDTH = 150
 MSG_HEIGHT = 120
 
-UP_KEY = 273
-DOWN_KEY = 274
-RIGHT_KEY = 275
-LEFT_KEY = 276
-ENTER_KEY = 13
+state = State()
 
-playerPositions = [(2, 2), (3, 2)] 
-enemyPositions = [(1, 4), (4, 4)]
-indicatorPos = (0, 0)
-
-STATE = state.State()
-
-# Anything Pygame related has to be used after the init() line
-pygame.init()
 screen = pygame.display.set_mode(size)
-
-players = []
-for position in playerPositions:
-    players.append(player.Player(position, True))
-
-indicator = indicator.Indicator(indicatorPos, True)
-
-enemys = []
-for position in enemyPositions:
-    enemys.append(enemy.Enemy(position, False))
-
-ter_plain = terrain.Terrain("Plain", "../data/green.png", 0 , 0)
-ter_mount = terrain.Terrain("Mountain", "../data/brown.png", 2, 20) 
-
 FONT = pygame.font.Font(None, FONT_SIZE)
 
-MAP_TERRAIN = [
-    [ter_mount, ter_mount, ter_mount, ter_mount, ter_mount, ter_mount, ter_plain, ter_plain, ter_plain, ter_mount],
-    [ter_mount, ter_plain, ter_plain, ter_plain, ter_mount, ter_mount, ter_plain, ter_plain, ter_plain, ter_mount],
-    [ter_mount, ter_plain, ter_plain, ter_plain, ter_mount, ter_mount, ter_plain, ter_plain, ter_plain, ter_mount],
-    [ter_mount, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_mount],
-    [ter_mount, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_mount],
-    [ter_mount, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_mount],
-    [ter_mount, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_mount],
-    [ter_mount, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_plain, ter_mount],
-    [ter_mount, ter_plain, ter_plain, ter_plain, ter_mount, ter_mount, ter_mount, ter_mount, ter_mount, ter_mount],
-    [ter_mount, ter_mount, ter_mount, ter_mount, ter_mount, ter_mount, ter_mount, ter_mount, ter_mount, ter_mount],
-]
+indicatorPos = (0, 0)
+indicator = Indicator(indicatorPos)
 
-UNITS = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-]
+level = Intro()
 
-UNITS_LEN = 10 # TODO: temp value until MAP_TERRAIN gets moved to a separate file and UNITS gets generated based on MAP_TERRAIN values
+UNITS_LEN = len(level.units[0])
 INFO_PANE_X_OFFSET = UNITS_LEN * PIXEL_SIZE
-
 
 def init_screen(map_array):
     y_coord = 0
@@ -96,21 +52,23 @@ def render_unit(unit):
     screen.blit(unit.image, (unit.position.x * PIXEL_SIZE, unit.position.y * PIXEL_SIZE))
 
 
-def move_indicator():    
-    screen.blit(MAP_TERRAIN[indicator.prev_position.y][indicator.prev_position.x].image, (indicator.prev_position.x * PIXEL_SIZE, indicator.prev_position.y * PIXEL_SIZE)) # TODO move terrain into a class so it can use render_unit()
-    if not UNITS[indicator.prev_position.y][indicator.prev_position.x] == 0:
-        render_unit(UNITS[indicator.prev_position.y][indicator.prev_position.x])
+def move_indicator():
+     # TODO move terrain into a class so it can use render_unit()
+    screen.blit(level.terrain[indicator.prev_position.y][indicator.prev_position.x].image, (indicator.prev_position.x * PIXEL_SIZE, indicator.prev_position.y * PIXEL_SIZE))
+    if not level.units[indicator.prev_position.y][indicator.prev_position.x] == 0:
+        render_unit(level.units[indicator.prev_position.y][indicator.prev_position.x])
 
-    screen.blit(MAP_TERRAIN[indicator.position.y][indicator.position.x].image, (indicator.position.x * PIXEL_SIZE, indicator.position.y * PIXEL_SIZE)) # TODO move terrain into a class so it can use render_unit()
-    if not UNITS[indicator.position.y][indicator.position.x] == 0:
-        render_unit(UNITS[indicator.position.y][indicator.position.x])
+    # TODO move terrain into a class so it can use render_unit()
+    screen.blit(level.terrain[indicator.position.y][indicator.position.x].image, (indicator.position.x * PIXEL_SIZE, indicator.position.y * PIXEL_SIZE))
+    if not level.units[indicator.position.y][indicator.position.x] == 0:
+        render_unit(level.units[indicator.position.y][indicator.position.x])
 
     render_unit(indicator)
 
 
 def update_unit_location():
-    UNITS[indicator.position.y][indicator.position.x] = UNITS[indicator.prev_position.y][indicator.prev_position.x]
-    UNITS[indicator.prev_position.y][indicator.prev_position.x] = 0
+    level.units[indicator.position.y][indicator.position.x] = level.units[indicator.prev_position.y][indicator.prev_position.x]
+    level.units[indicator.prev_position.y][indicator.prev_position.x] = 0
 
 
 def init_info_pane():
@@ -144,10 +102,10 @@ def init_info_pane():
 
 def display_unit_info(stats):
     info = [
-        'HP: {hp} / {maxhp}'.format(hp=stats.current_hp,
-                                    maxhp=stats.max_hp),
-        'STR: {str}'.format(str=stats.strength),
-        'DEF: {defense}'.format(defense=stats.defense)
+        "{name}".format(name=stats.name),
+        "HP: {hp} / {maxhp}".format(hp=stats.current_hp, maxhp=stats.max_hp),
+        "STR: {str}  DEF: {defense}".format(str=stats.strength, defense=stats.defense),
+        "ACC: {acc}  EVD: {evd}".format(acc=stats.accuracy, evd=stats.evasion),
     ]
     y_offset = 34
     for line in info:
@@ -161,7 +119,7 @@ def clear_info_pane():
 
 
 def display_terrain_info():
-    ter = MAP_TERRAIN[indicator.position.y][indicator.position.x]
+    ter = level.terrain[indicator.position.y][indicator.position.x]
     terrain_info = [
         "{type}".format(type=ter.type),
         "Def: {def_adjustment}".format(def_adjustment=ter.def_adjustment),
@@ -174,8 +132,8 @@ def display_terrain_info():
 
 
 def update_unit_info():
-    if not UNITS[indicator.position.y][indicator.position.x] == 0:
-        display_unit_info(UNITS[indicator.position.y][indicator.position.x].stats)
+    if not level.units[indicator.position.y][indicator.position.x] == 0:
+        display_unit_info(level.units[indicator.position.y][indicator.position.x].stats)
 
 
 def display_context_message(msg_text):
@@ -186,67 +144,108 @@ def display_context_message(msg_text):
 # TODO: This is pretty gross
 def check_for_unit_death(unit):
     if unit.stats.current_hp < 1:
-        UNITS[unit.position.y][unit.position.x] = 0
-        enemys.pop() # TODO: This is real dirty and should be done better
-        screen.blit(MAP_TERRAIN[unit.position.y][unit.position.x].image, (unit.position.x * PIXEL_SIZE, unit.position.y * PIXEL_SIZE))
+        level.units[unit.position.y][unit.position.x] = 0
+        level.enemys.pop() # TODO: This is real dirty and should be done better
+        screen.blit(level.terrain[unit.position.y][unit.position.x].image, (unit.position.x * PIXEL_SIZE, unit.position.y * PIXEL_SIZE))
 
 
 def attack(attacking_unit, defending_unit):
-    defending_unit.stats.current_hp -= attacking_unit.stats.strength - defending_unit.stats.defense
-    display_context_message("Attacking Enemy. Remaining HP: {hp}".format(hp=defending_unit.stats.current_hp))
-                
-    check_for_unit_death(UNITS[defending_unit.position.y][defending_unit.position.x])
+    if attacking_unit.stats.accuracy - defending_unit.stats.evasion  - level.terrain[defending_unit.position.y][defending_unit.position.x].evasion_adjustment > randint(0, 100):
+        defending_unit.stats.current_hp -= attacking_unit.stats.strength - defending_unit.stats.defense
+        display_context_message("Hit Enemy. Remaining HP: {hp}".format(hp=defending_unit.stats.current_hp))
+        check_for_unit_death(level.units[defending_unit.position.y][defending_unit.position.x])
+    else:
+        display_context_message("Attack Missed!")
 
 
+def up_key_handler():
+    if not indicator.position.y - 1 < 0:
+        if state.player_moving_flag and isinstance(level.units[indicator.position.y - 1][indicator.position.x], Enemy):
+            attack(level.units[indicator.position.y][indicator.position.x], level.units[indicator.position.y - 1][indicator.position.x])
+            state.update_flag = True
+        elif state.player_moving_flag and isinstance(level.units[indicator.position.y - 1][indicator.position.x], Player):
+            pass
+        else:
+            indicator.up()
+            state.update_flag = True
+            if state.player_moving_flag:
+                level.units[indicator.prev_position.y][indicator.prev_position.x].up()
+                update_unit_location()
+
+
+def down_key_handler():
+    if not indicator.position.y + 1 > (UNITS_LEN - 1):
+        if state.player_moving_flag and isinstance(level.units[indicator.position.y + 1][indicator.position.x], Enemy):
+            attack(level.units[indicator.position.y][indicator.position.x], level.units[indicator.position.y + 1][indicator.position.x])
+            state.update_flag = True
+        elif state.player_moving_flag and isinstance(level.units[indicator.position.y + 1][indicator.position.x], Player):
+            pass
+        else:
+            indicator.down()
+            state.update_flag = True
+            if state.player_moving_flag:
+                level.units[indicator.prev_position.y][indicator.prev_position.x].down()
+                update_unit_location()
+
+
+def right_key_handler():
+    if not indicator.position.x + 1 > (UNITS_LEN - 1):
+        if state.player_moving_flag and isinstance(level.units[indicator.position.y][indicator.position.x + 1], Enemy):
+            attack(level.units[indicator.position.y][indicator.position.x], level.units[indicator.position.y][indicator.position.x + 1])
+            state.update_flag = True
+        elif state.player_moving_flag and isinstance(level.units[indicator.position.y][indicator.position.x + 1], Player):
+            pass
+        else:
+            indicator.right()
+            state.update_flag = True
+            if state.player_moving_flag:
+                level.units[indicator.prev_position.y][indicator.prev_position.x].right()
+                update_unit_location()
+
+
+def left_key_handler():
+    if not indicator.position.x - 1 < 0:
+        if state.player_moving_flag and isinstance(level.units[indicator.position.y][indicator.position.x - 1], Enemy):
+            attack(level.units[indicator.position.y][indicator.position.x], level.units[indicator.position.y][indicator.position.x - 1])
+            state.update_flag = True
+        elif state.player_moving_flag and isinstance(level.units[indicator.position.y][indicator.position.x - 1], Player):
+            pass
+        else:
+            indicator.left()
+            state.update_flag = True
+            if state.player_moving_flag:
+                level.units[indicator.prev_position.y][indicator.prev_position.x].left()
+                update_unit_location()
+
+
+def enter_key_handler():
+    if state.player_moving_flag:
+        state.player_moving_flag = False
+    else:
+        if isinstance(level.units[indicator.position.y][indicator.position.x], Player):
+            state.player_moving_flag = True
+
+
+# TODO: handle setting update_flage = True better
 def event_handler(event_to_handle):
     if event_to_handle.type == pygame.QUIT:
         end_game('Game Over')
-
-    # TODO: handle setting update_flage = True better
     elif event_to_handle.type == pygame.KEYUP:
-        if event_to_handle.key == UP_KEY:
-            # TODO Functionify this, figure out check for enemy instead of not 0, add attack checks to all movements options
-            if STATE.player_moving_flag and not UNITS[indicator.position.y - 1][indicator.position.x] == 0:
-                attack(UNITS[indicator.position.y][indicator.position.x], UNITS[indicator.position.y - 1][indicator.position.x])
-                STATE.update_flag = True
-            elif not indicator.position.y - 1 < 0:
-                indicator.up()
-                STATE.update_flag = True
-                if STATE.player_moving_flag:
-                    UNITS[indicator.prev_position.y][indicator.prev_position.x].up()
-                    update_unit_location()
-        elif event_to_handle.key == DOWN_KEY:
-            if not indicator.position.y + 1 > (UNITS_LEN - 1):
-                indicator.down()
-                STATE.update_flag = True
-                if STATE.player_moving_flag:
-                    UNITS[indicator.prev_position.y][indicator.prev_position.x].down()
-                    update_unit_location()
-        elif event_to_handle.key == RIGHT_KEY:
-            if not indicator.position.x + 1 > (UNITS_LEN - 1):
-                indicator.right()
-                STATE.update_flag = True
-                if STATE.player_moving_flag:
-                    UNITS[indicator.prev_position.y][indicator.prev_position.x].right()
-                    update_unit_location()
-        elif event_to_handle.key == LEFT_KEY:
-            if not indicator.position.x - 1 < 0:
-                indicator.left()
-                STATE.update_flag = True
-                if STATE.player_moving_flag:
-                    UNITS[indicator.prev_position.y][indicator.prev_position.x].left()
-                    update_unit_location()
-        elif event_to_handle.key == ENTER_KEY:
-            if STATE.player_moving_flag:
-                STATE.player_moving_flag = False
-            else:
-                if type(UNITS[indicator.position.y][indicator.position.x]) == player.Player:
-                    STATE.player_moving_flag = True
+        if event_to_handle.key == pygame.K_UP:
+            up_key_handler()
+        elif event_to_handle.key == pygame.K_DOWN:
+            down_key_handler()
+        elif event_to_handle.key == pygame.K_RIGHT:
+            right_key_handler()
+        elif event_to_handle.key == pygame.K_LEFT:
+            left_key_handler()
+        elif event_to_handle.key == pygame.K_RETURN:
+            enter_key_handler()
 
 
 def check_for_win():
-    if len(enemys) == 0:
-        STATE.player_won = True
+    if not level.enemys:
+        state.player_won = True
 
 
 def end_game(msg):
@@ -254,34 +253,30 @@ def end_game(msg):
     sys.exit()
 
 
-init_screen(MAP_TERRAIN)
+init_screen(level.terrain)
 init_info_pane()
 display_terrain_info()
-display_context_message('Testing Testing Testing')
-display_context_message('Second time')
 
 render_unit(indicator)
 
-for _player in players:
-    UNITS[_player.position.y][_player.position.x] = _player
+for _player in level.players:
     render_unit(_player)
 
-for enemy in enemys:
-    UNITS[enemy.position.y][enemy.position.x] = enemy
-    render_unit(enemy)
+for _enemy in level.enemys:
+    render_unit(_enemy)
 
 pygame.display.update()
 
 while 1:
-    if STATE.player_won:
+    if state.player_won:
         end_game('You Win')
 
-    STATE.update_flag = False
+    state.update_flag = False
 
     for event in pygame.event.get():
         event_handler(event)
 
-    if STATE.update_flag:
+    if state.update_flag:
         check_for_win()
         clear_info_pane()
         move_indicator()
