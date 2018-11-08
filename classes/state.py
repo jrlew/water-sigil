@@ -13,6 +13,7 @@ class State():
 
 class Flags():
     def __init__(self):
+        self.player_turn = True
         self.update = False
         self.player_moving = False
         self.attack_prompt = False

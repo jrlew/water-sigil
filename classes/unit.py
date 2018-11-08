@@ -4,10 +4,10 @@ Placeholder
 
 
 class Unit():
-    def __init__(self, init_pos_tuple):
+    def __init__(self, init_pos_tuple, stats_dict):
         self.position = Position(init_pos_tuple)
         self.prev_position = Position(init_pos_tuple)
-        self.stats = Stats()
+        self.stats = Stats(stats_dict)
 
     def up(self):
         self.update_prev_position()
@@ -31,14 +31,14 @@ class Unit():
 
 
 class Stats():
-    def __init__(self):
-        self.name = "Placeholder"
-        self.max_hp = 20
-        self.current_hp = 18
-        self.strength = 6
-        self.defense = 3
-        self.accuracy = 110
-        self.evasion = 20
+    def __init__(self, init_stats):
+        self.name = init_stats["name"]
+        self.max_hp = init_stats["hp"]
+        self.current_hp = init_stats["hp"]
+        self.strength = init_stats["strength"]
+        self.defense = init_stats["defense"]
+        self.accuracy = init_stats["accuracy"]
+        self.evasion = init_stats["evasion"]
 
 
 class Position():

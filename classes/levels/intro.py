@@ -21,14 +21,30 @@ class Intro(Level):
 
         # TODO: This is going to get complicated and messy once it expands varied types on units...
         playerPositions = [(2, 2), (3, 2)]
+        playerStats = {
+            "name": "Player",
+            "hp": 20,
+            "strength": 8,
+            "defense": 4,
+            "accuracy": 120,
+            "evasion": 25,
+        }
         enemyPositions = [(1, 4), (4, 4)]
+        enemyStats = {
+            "name": "Enemy",
+            "hp": 14,
+            "strength": 4,
+            "defense": 2,
+            "accuracy": 90,
+            "evasion": 30,
+        }
 
         players = []
         for position in playerPositions:
-            players.append(Player(position))
+            players.append(Player(position, playerStats))
         enemys = []
         for position in enemyPositions:
-            enemys.append(Enemy(position))
+            enemys.append(Enemy(position, enemyStats))
 
         Level.__init__(
             self,

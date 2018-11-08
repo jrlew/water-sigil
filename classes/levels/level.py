@@ -23,6 +23,7 @@ class Level():
     def update_unit_location(self, state):
         self.units[state.indicator.position.y][state.indicator.position.x] = self.units[state.indicator.prev_position.y][state.indicator.prev_position.x]
         self.units[state.indicator.prev_position.y][state.indicator.prev_position.x] = 0
+        state.flags.player_turn = False
 
 
     def update_unit_info(self, state):

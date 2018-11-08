@@ -12,8 +12,18 @@ from classes.screen import Screen
 from classes.levels.intro import Intro
 from classes.event_handler import EventHandler
 
+# Temp until Indicator separated from Unit
+playerStats = {
+    "name": "Indicator",
+    "hp": 20,
+    "strength": 8,
+    "defense": 4,
+    "accuracy": 120,
+    "evasion": 25,
+}
+
 pygame.init()
-state = State(Screen(), Intro(), Indicator((0, 0)))
+state = State(Screen(), Intro(), Indicator((0, 0), playerStats))
 event_handler = EventHandler()
 
 state.screen.init_screen(state.level.terrain)
@@ -37,13 +47,19 @@ while 1:
 
     state.flags.update = False
 
-    for event in pygame.event.get():
-        event_handler.handle(event, state)
+    if state.flags.player_turn:
+        for event in pygame.event.get():
+            event_handler.handle(event, state)
 
-    if state.flags.update:
-        state.level.check_for_win(state)
-        state.screen.clear_info_pane(state)
-        state.screen.move_indicator(state)
-        state.level.update_unit_info(state)
-        state.screen.display_terrain_info(state)
-        pygame.display.update()
+        if state.flags.update:
+            state.level.check_for_win(state)
+            state.screen.clear_info_pane(state)
+            state.screen.move_indicator(state)
+            state.level.update_unit_info(state)
+            state.screen.display_terrain_info(state)
+            pygame.display.update()
+
+    else:
+        state.screen.display_context_message("Enemy's Turn Would Go Here")
+        # state.level.move_enemy(state)
+        state.flags.player_turn = True
