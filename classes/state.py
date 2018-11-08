@@ -4,8 +4,16 @@ Placeholder
 
 
 class State():
+    def __init__(self, screen, level, indicator):
+        self.flags = Flags()
+        self.screen = screen
+        self.level = level
+        self.indicator = indicator
+
+
+class Flags():
     def __init__(self):
-        self.update_flag = False
-        self.player_moving_flag = False
-        self.attack_prompt_flag = False
+        self.update = False
+        self.player_moving = False
+        self.attack_prompt = False
         self.player_won = False

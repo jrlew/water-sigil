@@ -5,9 +5,10 @@ Placeholder
 from .level import Level
 from ..terrain.plain import Plain
 from ..terrain.mount import Mount
+from ..terrain.forest import Forest
+from ..terrain.fortress import Fortress
 from ..player import Player
 from ..enemy import Enemy
-
 
 
 class Intro(Level):
@@ -15,6 +16,8 @@ class Intro(Level):
         # TODO: this is kinda gross. Tiles Classes that has the possiblities pre-instantiated?
         PLAIN = Plain()
         MOUNT = Mount()
+        FREST = Forest()
+        FTRSS = Fortress()
 
         # TODO: This is going to get complicated and messy once it expands varied types on units...
         playerPositions = [(2, 2), (3, 2)]
@@ -36,10 +39,10 @@ class Intro(Level):
                 [MOUNT, MOUNT, MOUNT, MOUNT, MOUNT, MOUNT, PLAIN, PLAIN, PLAIN, MOUNT],
                 [MOUNT, PLAIN, PLAIN, PLAIN, MOUNT, MOUNT, PLAIN, PLAIN, PLAIN, MOUNT],
                 [MOUNT, PLAIN, PLAIN, PLAIN, MOUNT, MOUNT, PLAIN, PLAIN, PLAIN, MOUNT],
+                [MOUNT, FREST, FREST, FREST, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, MOUNT],
+                [MOUNT, FREST, FREST, FREST, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, MOUNT],
                 [MOUNT, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, MOUNT],
-                [MOUNT, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, MOUNT],
-                [MOUNT, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, MOUNT],
-                [MOUNT, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, MOUNT],
+                [MOUNT, PLAIN, PLAIN, FTRSS, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, MOUNT],
                 [MOUNT, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, PLAIN, MOUNT],
                 [MOUNT, PLAIN, PLAIN, PLAIN, MOUNT, MOUNT, MOUNT, MOUNT, MOUNT, MOUNT],
                 [MOUNT, MOUNT, MOUNT, MOUNT, MOUNT, MOUNT, MOUNT, MOUNT, MOUNT, MOUNT],
