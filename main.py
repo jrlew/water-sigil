@@ -61,5 +61,6 @@ while 1:
 
     else:
         state.screen.display_context_message("Enemy's Turn Would Go Here")
-        # state.level.move_enemy(state)
+        state.level.enemy_turn(state)
         state.flags.player_turn = True
+        pygame.display.update()
