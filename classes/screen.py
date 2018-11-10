@@ -50,10 +50,11 @@ class Screen():
         pygame.draw.rect(self.display, WHITE, [475, 320, 4, 40], 0)
 
 
+    # TODO: Clean up formatting
     def display_unit_info(self, state, stats):
         info_pane_x_offset = state.level.width * PIXEL_SIZE
         info = [
-            "{name}".format(name=stats.name),
+            "{name} {remaining_move}/{max_move}".format(name=stats.name, remaining_move=stats.remaining_movement, max_move=stats.movement),
             "HP: {hp} / {maxhp}".format(hp=stats.current_hp, maxhp=stats.max_hp),
             "STR: {str}  DEF: {defense}".format(str=stats.strength, defense=stats.defense),
             "ACC: {acc}  EVD: {evd}".format(acc=stats.accuracy, evd=stats.evasion),
