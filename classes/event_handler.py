@@ -40,7 +40,7 @@ class EventHandler():
                 state.flags.update = True
                 if state.flags.player_moving:
                     state.level.units[state.indicator.prev_position.y][state.indicator.prev_position.x].up()
-                    state.level.update_unit_location(state)
+                    state.level.update_unit_location(state, state.level.units[state.indicator.prev_position.y][state.indicator.prev_position.x])
 
 
     def down_key_handler(self, state):
@@ -55,7 +55,7 @@ class EventHandler():
                 state.flags.update = True
                 if state.flags.player_moving:
                     state.level.units[state.indicator.prev_position.y][state.indicator.prev_position.x].down()
-                    state.level.update_unit_location(state)
+                    state.level.update_unit_location(state, state.level.units[state.indicator.prev_position.y][state.indicator.prev_position.x])
 
 
     def right_key_handler(self, state):
@@ -70,7 +70,7 @@ class EventHandler():
                 state.flags.update = True
                 if state.flags.player_moving:
                     state.level.units[state.indicator.prev_position.y][state.indicator.prev_position.x].right()
-                    state.level.update_unit_location(state)
+                    state.level.update_unit_location(state, state.level.units[state.indicator.prev_position.y][state.indicator.prev_position.x])
 
 
     def left_key_handler(self, state):
@@ -85,7 +85,7 @@ class EventHandler():
                 state.flags.update = True
                 if state.flags.player_moving:
                     state.level.units[state.indicator.prev_position.y][state.indicator.prev_position.x].left()
-                    state.level.update_unit_location(state)
+                    state.level.update_unit_location(state, state.level.units[state.indicator.prev_position.y][state.indicator.prev_position.x])
 
 
     def enter_key_handler(self, state):
@@ -93,4 +93,5 @@ class EventHandler():
             state.flags.player_moving = False
         else:
             if isinstance(state.level.units[state.indicator.position.y][state.indicator.position.x], Player):
-                state.flags.player_moving = True
+                if state.level.units[state.indicator.position.y][state.indicator.position.x].stats.remaining_movement:
+                    state.flags.player_moving = True

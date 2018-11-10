@@ -21,23 +21,23 @@ class Level():
 
 
     # TODO: Deprecate this in favor of below
-    def update_unit_location(self, state):
-        self.units[state.indicator.position.y][state.indicator.position.x] = self.units[state.indicator.prev_position.y][state.indicator.prev_position.x]
-        self.units[state.indicator.prev_position.y][state.indicator.prev_position.x] = 0
-        # TODO: Dirty... 
-        self.units[state.indicator.position.y][state.indicator.position.x].stats.remaining_movement -= 1
-        if not self.units[state.indicator.position.y][state.indicator.position.x].stats.remaining_movement:
-            self.units[state.indicator.position.y][state.indicator.position.x].stats.remaining_movement = int(self.units[state.indicator.position.y][state.indicator.position.x].stats.movement)
-            state.flags.player_turn = False
+    # def update_unit_location(self, state):
+    #     self.units[state.indicator.position.y][state.indicator.position.x] = self.units[state.indicator.prev_position.y][state.indicator.prev_position.x]
+    #     self.units[state.indicator.prev_position.y][state.indicator.prev_position.x] = 0
+    #     # TODO: Dirty... 
+    #     self.units[state.indicator.position.y][state.indicator.position.x].stats.remaining_movement -= 1
+    #     if not self.units[state.indicator.position.y][state.indicator.position.x].stats.remaining_movement:
+    #         self.units[state.indicator.position.y][state.indicator.position.x].stats.remaining_movement = int(self.units[state.indicator.position.y][state.indicator.position.x].stats.movement)
+    #         state.flags.player_turn = False
 
-    def update_unit_location_NEW(self, state, unit):
+    def update_unit_location(self, state, unit):
         self.units[unit.prev_position.y][unit.prev_position.x] = 0
         self.units[unit.position.y][unit.position.x] = unit
         unit.stats.remaining_movement -= 1
-        # TODO: Still do better, move flag switch and movement reset to an end_turn function that checks all units in enemy/players have used up their movement
         if not unit.stats.remaining_movement:
-            unit.stats.remaining_movement = int(unit.stats.movement)
-            state.flags.player_turn = not state.flags.player_turn
+            unit.image = unit.image_inactive
+            state.flags.player_moving = not state.flags.player_moving
+
 
     def update_unit_info(self, state):
         if not state.level.units[state.indicator.position.y][state.indicator.position.x] == 0:
@@ -60,6 +60,25 @@ class Level():
             state.screen.render_terrain(self.terrain[unit.position.y][unit.position.x], unit.position.x, unit.position.y)
 
 
+    def check_for_turn_end(self, state, units_array):
+        unit_with_remaining_movement = False
+        for unit in units_array:
+            if unit.stats.remaining_movement:
+                unit_with_remaining_movement = True
+        if not unit_with_remaining_movement:
+            self.reset_units_movement(state, units_array)
+            state.flags.player_turn = not state.flags.player_turn
+
+        
+    def reset_units_movement(self, state, units_array):
+        for unit in units_array:
+            unit.stats.remaining_movement = int(unit.stats.movement)
+            unit.image = unit.image_active
+            state.screen.render_unit(unit)
+        #TODO: find a better place for this:
+        state.screen.render_unit(state.indicator)
+
+
     def move_unit(self, state, unit):
         unit.update_prev_position()
         prev_terrain = self.terrain[unit.prev_position.y][unit.prev_position.x]
@@ -74,7 +93,7 @@ class Level():
         state.screen.render_terrain(prev_terrain, unit.prev_position.x, unit.prev_position.y)
         state.screen.render_unit(unit)
 
-        self.update_unit_location_NEW(state, unit)
+        self.update_unit_location(state, unit)
 
 
     # TODO: Make some real logic for this
@@ -93,4 +112,3 @@ class Level():
     def end_game(self, msg):
         print(msg)
         sys.exit()
-

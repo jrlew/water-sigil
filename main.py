@@ -59,8 +59,13 @@ while 1:
             state.screen.display_terrain_info(state)
             pygame.display.update()
 
+            # TODO: this should check on movement not on every cyle...
+            state.level.check_for_turn_end(state, state.level.players)
+
+
     else:
         state.screen.display_context_message("Enemy's Turn Would Go Here")
         state.level.enemy_turn(state)
         # state.flags.player_turn = True
         pygame.display.update()
+        state.level.check_for_turn_end(state, state.level.enemys)

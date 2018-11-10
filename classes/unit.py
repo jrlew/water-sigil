@@ -42,8 +42,8 @@ class Stats():
         self.accuracy = init_stats["accuracy"]
         self.evasion = init_stats["evasion"]
         # TODO: add these to unit init params
-        self.movement = 3
-        self.remaining_movement = 3
+        self.movement = 1
+        self.remaining_movement = 1
 
 
 class Position():
