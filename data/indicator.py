@@ -4,7 +4,7 @@ Placeholder
 
 import os
 import pygame
-from .unit import Unit
+from .units.unit import Unit
 
 WHITE = 255, 255, 255
 

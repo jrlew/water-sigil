@@ -4,10 +4,10 @@ Placeholder
 
 import os
 import pygame
-from .unit import Unit
+from .units.unit import Unit
 
 
-class Enemy(Unit):
+class Player(Unit):
     def __init__(self, init_pos, job):
         Unit.__init__(self, init_pos, job.stats)
         self.image_active = job.image_active

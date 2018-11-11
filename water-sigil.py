@@ -4,13 +4,13 @@ Placeholder
 
 import pygame
 
-from classes.enemy import Enemy
-from classes.player import Player
-from classes.indicator import Indicator
-from classes.state import State
-from classes.screen import Screen
-from classes.levels.intro import Intro
-from classes.event_handler import EventHandler
+from data.enemy import Enemy
+from data.player import Player
+from data.indicator import Indicator
+from data.state import State
+from data.screen import Screen
+from data.levels.intro import Intro
+from data.event_handler import EventHandler
 
 # Temp until Indicator separated from Unit
 playerStats = {

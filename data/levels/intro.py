@@ -3,15 +3,17 @@ Placeholder
 """
 
 from .level import Level
+
 from ..terrain.plain import Plain
 from ..terrain.mount import Mount
 from ..terrain.forest import Forest
 from ..terrain.fortress import Fortress
+
 from ..player import Player
 from ..enemy import Enemy
 
-from ..soldier import Soldier
-from ..knight import Knight
+from ..units.soldier import Soldier
+from ..units.knight import Knight
 
 
 class Intro(Level):
