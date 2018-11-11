@@ -25,7 +25,7 @@ class Intro(Level):
 
         players = [
             # Player((1, 4), Soldier("blue")),
-            Player((2, 4), Knight("blue")),
+            Player((3, 4), Knight("blue")),
             # Player((3, 3), Soldier("blue")),
         ]
 

@@ -16,7 +16,7 @@ class Knight(Job):
                 "defense": 3,
                 "accuracy": 110,
                 "evasion": 20,
-                "movement": 1,
+                "movement": 3,
             },
         }
         Job.__init__(self, self.info)

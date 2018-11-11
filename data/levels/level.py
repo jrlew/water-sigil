@@ -5,6 +5,8 @@ Placeholder
 import sys
 from random import randint
 
+from ..player import Player
+
 class Level():
     def __init__(self, name, players, enemys, terrain, units):
         self.name = name
@@ -69,43 +71,56 @@ class Level():
         state.screen.render_unit(state.indicator)
 
 
-    # TODO: Unit needs to attack as a part of this
     def move_enemy_unit(self, state, unit):
-        # for mp in range(unit.stats.movement):
-        for mp in range(1):
-            # print(mp)
+        for mp in range(unit.stats.movement):
             unit.stats.remaining_movement -= 1
 
-            up = self.is_valid_move(unit.position.x, unit.position.y - 1)
-            down = self.is_valid_move(unit.position.x, unit.position.y + 1)
-            left = self.is_valid_move(unit.position.x - 1, unit.position.y)
-            right = self.is_valid_move(unit.position.x + 1, unit.position.y)
+            options = self.unit_to_attack(unit)
+            print("options", options)
 
-            print(unit.stats.name, "up:", up, " down:", down, " left:", left, " right:", right)
+            if options:
+                self.attack(state, unit, options[0])
+            else:
+                up = self.is_valid_move(unit.position.x, unit.position.y - 1)
+                down = self.is_valid_move(unit.position.x, unit.position.y + 1)
+                left = self.is_valid_move(unit.position.x - 1, unit.position.y)
+                right = self.is_valid_move(unit.position.x + 1, unit.position.y)
 
-            # unit.update_prev_position()
-            prev_terrain = self.terrain[unit.prev_position.y][unit.prev_position.x]
+                move = randint(0, 3)
+                if move == 0: 
+                    if up:
+                        unit.up()
+                elif move == 1:
+                    if down: 
+                        unit.down()
+                elif move == 2: 
+                    if left:
+                        unit.left()
+                elif move == 3: 
+                    if right:
+                        unit.right()
 
-            # TODO: Unit position change decision logic
-            move = randint(0, 3)
-            if move == 0: 
-                unit.up()
-                print(unit.stats.name, ": up")
-            elif move == 1: 
-                unit.down()
-                print(unit.stats.name, ": down")
-            elif move == 2: 
-                unit.left()
-                print(unit.stats.name, ": left")
-            elif move == 3: 
-                unit.right()
-                print(unit.stats.name, ": right")
+                prev_terrain = self.terrain[unit.prev_position.y][unit.prev_position.x]
+                state.screen.render_terrain(prev_terrain, unit.prev_position.x, unit.prev_position.y)
+                state.screen.render_unit(unit)
 
-            print("\n")
-            state.screen.render_terrain(prev_terrain, unit.prev_position.x, unit.prev_position.y)
-            state.screen.render_unit(unit)
+                self.update_unit_location(state, unit)
 
-            self.update_unit_location(state, unit)
+
+    def unit_to_attack(self, unit):
+        attack_options= []
+
+        # TODO: Add bounds checking to avoid crashes
+        if isinstance(self.units[unit.position.y - 1][unit.position.x], Player):
+            attack_options.append(self.units[unit.position.y - 1][unit.position.x])
+        elif isinstance(self.units[unit.position.y + 1][unit.position.x], Player):
+            attack_options.append(self.units[unit.position.y + 1][unit.position.x])
+        elif isinstance(self.units[unit.position.y][unit.position.x - 1], Player):
+            attack_options.append(self.units[unit.position.y][unit.position.x - 1])
+        elif isinstance(self.units[unit.position.y][unit.position.x + 1], Player):
+            attack_options.append(self.units[unit.position.y][unit.position.x + 1])
+
+        return attack_options
 
 
     # TODO: Clean this up
