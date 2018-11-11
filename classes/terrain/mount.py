@@ -7,5 +7,5 @@ from .terrain import Terrain
 
 class Mount(Terrain):
     def __init__(self):
-        Terrain.__init__(self, "Mount", "../../data/images/brown.png", 2, 20)
+        Terrain.__init__(self, "Mount", "../../assets/terrain/mountain.png", 2, 20)
 
