@@ -8,9 +8,9 @@ from .unit import Unit
 
 
 class Player(Unit):
-    def __init__(self, init_pos, playerStats):
-        Unit.__init__(self, init_pos, playerStats)
-        self.image_active = pygame.image.load(os.path.join(os.path.dirname(__file__), "../assets/characters/blue/soldier/blue-soldier.png"))
-        self.image_inactive = pygame.image.load(os.path.join(os.path.dirname(__file__), "../assets/characters/blue/soldier/blue-soldier-inactive.png"))
+    def __init__(self, init_pos, job):
+        Unit.__init__(self, init_pos, job.stats)
+        self.image_active = job.image_active
+        self.image_inactive = job.image_inactive
         self.image = self.image_active
         self.rect = self.image.get_rect()

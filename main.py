@@ -25,6 +25,8 @@ playerStats = {
 pygame.init()
 state = State(Screen(), Intro(), Indicator((0, 0), playerStats))
 event_handler = EventHandler()
+clock = pygame.time.Clock()
+FPS = 30
 
 state.screen.init_screen(state.level.terrain)
 state.screen.init_info_pane(state)
@@ -42,12 +44,17 @@ for _enemy in state.level.enemys:
 pygame.display.update()
 
 while 1:
+    clock.tick(FPS)
+
     if state.flags.player_won:
         state.level.end_game('You Win')
 
     state.flags.update = False
 
     if state.flags.player_turn:
+        state.screen.display_context_message("Player Turn")
+        pygame.display.update()
+        
         for event in pygame.event.get():
             event_handler.handle(event, state)
 
@@ -64,8 +71,7 @@ while 1:
 
 
     else:
-        state.screen.display_context_message("Enemy's Turn Would Go Here")
+        state.screen.display_context_message("Enemy Turn")
         state.level.enemy_turn(state)
-        # state.flags.player_turn = True
         pygame.display.update()
         state.level.check_for_turn_end(state, state.level.enemys)

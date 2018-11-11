@@ -10,6 +10,9 @@ from ..terrain.fortress import Fortress
 from ..player import Player
 from ..enemy import Enemy
 
+from ..soldier import Soldier
+from ..knight import Knight
+
 
 class Intro(Level):
     def __init__(self):
@@ -41,10 +44,10 @@ class Intro(Level):
 
         players = []
         for position in playerPositions:
-            players.append(Player(position, playerStats))
+            players.append(Player(position, Knight("blue")))
         enemys = []
         for position in enemyPositions:
-            enemys.append(Enemy(position, enemyStats))
+            enemys.append(Enemy(position, Soldier("red")))
 
         Level.__init__(
             self,

@@ -20,16 +20,6 @@ class Level():
             self.units[_enemy.position.y][_enemy.position.x] = _enemy
 
 
-    # TODO: Deprecate this in favor of below
-    # def update_unit_location(self, state):
-    #     self.units[state.indicator.position.y][state.indicator.position.x] = self.units[state.indicator.prev_position.y][state.indicator.prev_position.x]
-    #     self.units[state.indicator.prev_position.y][state.indicator.prev_position.x] = 0
-    #     # TODO: Dirty... 
-    #     self.units[state.indicator.position.y][state.indicator.position.x].stats.remaining_movement -= 1
-    #     if not self.units[state.indicator.position.y][state.indicator.position.x].stats.remaining_movement:
-    #         self.units[state.indicator.position.y][state.indicator.position.x].stats.remaining_movement = int(self.units[state.indicator.position.y][state.indicator.position.x].stats.movement)
-    #         state.flags.player_turn = False
-
     def update_unit_location(self, state, unit):
         self.units[unit.prev_position.y][unit.prev_position.x] = 0
         self.units[unit.position.y][unit.position.x] = unit
@@ -79,6 +69,9 @@ class Level():
         state.screen.render_unit(state.indicator)
 
 
+    # TODO: Change this to reflect that it is enemy units
+    # TODO: Unit needs to expend all their movement points as a part of this
+    # TODO: Unit needs to attack as a part of this
     def move_unit(self, state, unit):
         unit.update_prev_position()
         prev_terrain = self.terrain[unit.prev_position.y][unit.prev_position.x]
@@ -98,10 +91,9 @@ class Level():
 
     # TODO: Make some real logic for this
     def enemy_turn(self, state):
-        max = len(self.enemys)
-        index = randint(0, max - 1)
-        random_enemy = self.enemys[index]
-        self.move_unit(state, random_enemy)
+        self.reset_units_movement(state, self.enemys)
+        for enemy in self.enemys:
+            self.move_unit(state, enemy)
 
 
     def check_for_win(self, state):
