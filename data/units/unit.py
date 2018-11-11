@@ -8,8 +8,6 @@ class Unit():
         self.position = Position(init_pos_tuple)
         self.prev_position = Position(init_pos_tuple)
         self.stats = Stats(stats_dict)
-        # TODO: move/name this better
-        # self.has_moved = False # Don't need this, use stats.remaining_movment instead
 
     def up(self):
         self.update_prev_position()
@@ -41,9 +39,8 @@ class Stats():
         self.defense = init_stats["defense"]
         self.accuracy = init_stats["accuracy"]
         self.evasion = init_stats["evasion"]
-        # TODO: add these to unit init params
-        self.movement = 1
-        self.remaining_movement = 1
+        self.movement = init_stats["movement"]
+        self.remaining_movement = init_stats["movement"]
 
 
 class Position():

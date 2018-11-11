@@ -12,18 +12,8 @@ from data.screen import Screen
 from data.levels.intro import Intro
 from data.event_handler import EventHandler
 
-# Temp until Indicator separated from Unit
-playerStats = {
-    "name": "Indicator",
-    "hp": 20,
-    "strength": 8,
-    "defense": 4,
-    "accuracy": 120,
-    "evasion": 25,
-}
-
 pygame.init()
-state = State(Screen(), Intro(), Indicator((0, 0), playerStats))
+state = State(Screen(), Intro(), Indicator((0, 0)))
 event_handler = EventHandler()
 clock = pygame.time.Clock()
 FPS = 30
@@ -45,6 +35,7 @@ pygame.display.update()
 
 while 1:
     clock.tick(FPS)
+
 
     if state.flags.player_won:
         state.level.end_game('You Win')
@@ -74,4 +65,6 @@ while 1:
         state.screen.display_context_message("Enemy Turn")
         state.level.enemy_turn(state)
         pygame.display.update()
-        state.level.check_for_turn_end(state, state.level.enemys)
+        # state.level.check_for_turn_end(state, state.level.enemys)
+        state.level.reset_units_movement(state, state.level.enemys)
+        state.flags.player_turn = not state.flags.player_turn

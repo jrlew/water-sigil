@@ -18,38 +18,24 @@ from ..units.knight import Knight
 
 class Intro(Level):
     def __init__(self):
-        # TODO: this is kinda gross. Tiles Classes that has the possiblities pre-instantiated?
         PLAIN = Plain()
         MOUNT = Mount()
         FREST = Forest()
         FTRSS = Fortress()
 
-        # TODO: This is going to get complicated and messy once it expands varied types on units...
-        playerPositions = [(2, 2), (3, 2)]
-        playerStats = {
-            "name": "Player",
-            "hp": 20,
-            "strength": 8,
-            "defense": 4,
-            "accuracy": 120,
-            "evasion": 25,
-        }
-        enemyPositions = [(1, 4), (4, 4)]
-        enemyStats = {
-            "name": "Enemy",
-            "hp": 14,
-            "strength": 4,
-            "defense": 2,
-            "accuracy": 90,
-            "evasion": 30,
-        }
+        players = [
+            # Player((1, 4), Soldier("blue")),
+            Player((2, 4), Knight("blue")),
+            # Player((3, 3), Soldier("blue")),
+        ]
 
-        players = []
-        for position in playerPositions:
-            players.append(Player(position, Knight("blue")))
-        enemys = []
-        for position in enemyPositions:
-            enemys.append(Enemy(position, Soldier("red")))
+        enemys = [
+            Enemy((3, 6), Soldier("red")),
+            Enemy((2, 7), Knight("red")),
+            # Enemy((7, 2), Soldier("red")),
+            # Enemy((8, 3), Soldier("red")),
+            # Enemy((6, 5), Soldier("red")),
+        ]
 
         Level.__init__(
             self,

@@ -16,6 +16,7 @@ class Soldier(Job):
                 "defense": 1,
                 "accuracy": 90,
                 "evasion": 10,
+                "movement": 2,
             },
         }
         Job.__init__(self, self.info)

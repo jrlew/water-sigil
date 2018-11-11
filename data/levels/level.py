@@ -46,7 +46,7 @@ class Level():
     def check_for_unit_death(self, state, unit):
         if unit.stats.current_hp < 1:
             self.units[unit.position.y][unit.position.x] = 0
-            self.enemys.pop() # TODO: This is real dirty and should be done better, Also I'm not sure why it works...
+            self.enemys.remove(unit)
             state.screen.render_terrain(self.terrain[unit.position.y][unit.position.x], unit.position.x, unit.position.y)
 
 
@@ -69,31 +69,62 @@ class Level():
         state.screen.render_unit(state.indicator)
 
 
-    # TODO: Change this to reflect that it is enemy units
-    # TODO: Unit needs to expend all their movement points as a part of this
     # TODO: Unit needs to attack as a part of this
-    def move_unit(self, state, unit):
-        unit.update_prev_position()
-        prev_terrain = self.terrain[unit.prev_position.y][unit.prev_position.x]
+    def move_enemy_unit(self, state, unit):
+        # for mp in range(unit.stats.movement):
+        for mp in range(1):
+            # print(mp)
+            unit.stats.remaining_movement -= 1
 
-        # TODO: Unit position change decision logic
-        move = randint(0, 3)
-        if move == 0: unit.position.x += 1
-        elif move == 1: unit.position.x -= 1
-        elif move == 2: unit.position.y += 1
-        elif move == 3: unit.position.y -= 1
+            up = self.is_valid_move(unit.position.x, unit.position.y - 1)
+            down = self.is_valid_move(unit.position.x, unit.position.y + 1)
+            left = self.is_valid_move(unit.position.x - 1, unit.position.y)
+            right = self.is_valid_move(unit.position.x + 1, unit.position.y)
 
-        state.screen.render_terrain(prev_terrain, unit.prev_position.x, unit.prev_position.y)
-        state.screen.render_unit(unit)
+            print(unit.stats.name, "up:", up, " down:", down, " left:", left, " right:", right)
 
-        self.update_unit_location(state, unit)
+            # unit.update_prev_position()
+            prev_terrain = self.terrain[unit.prev_position.y][unit.prev_position.x]
+
+            # TODO: Unit position change decision logic
+            move = randint(0, 3)
+            if move == 0: 
+                unit.up()
+                print(unit.stats.name, ": up")
+            elif move == 1: 
+                unit.down()
+                print(unit.stats.name, ": down")
+            elif move == 2: 
+                unit.left()
+                print(unit.stats.name, ": left")
+            elif move == 3: 
+                unit.right()
+                print(unit.stats.name, ": right")
+
+            print("\n")
+            state.screen.render_terrain(prev_terrain, unit.prev_position.x, unit.prev_position.y)
+            state.screen.render_unit(unit)
+
+            self.update_unit_location(state, unit)
+
+
+    # TODO: Clean this up
+    def is_valid_move(self, x, y):
+        valid_move = True
+
+        if x < 0 or x > self.height - 1: valid_move = False
+        if y < 0 or y > self.width - 1: valid_move = False
+        if valid_move:
+            if not self.units[y][x] == 0: valid_move = False
+
+        return valid_move
 
 
     # TODO: Make some real logic for this
     def enemy_turn(self, state):
         self.reset_units_movement(state, self.enemys)
         for enemy in self.enemys:
-            self.move_unit(state, enemy)
+            self.move_enemy_unit(state, enemy)
 
 
     def check_for_win(self, state):
