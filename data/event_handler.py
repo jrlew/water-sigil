@@ -11,6 +11,7 @@ from .enemy import Enemy
 class EventHandler():
     def __init__(self):
         self.placholder = True
+        self.custom_events = CustomEvents()
 
     def handle(self, event, state):
         if event.type == pygame.QUIT:
@@ -26,6 +27,8 @@ class EventHandler():
                 self.left_key_handler(state)
             elif event.key == pygame.K_RETURN:
                 self.enter_key_handler(state)
+        elif event.type == self.custom_events.UPDATE_ANIMATION:
+                self.update_animation_handler(state)
 
 
     def up_key_handler(self, state):
@@ -95,3 +98,19 @@ class EventHandler():
             if isinstance(state.level.units[state.indicator.position.y][state.indicator.position.x], Player):
                 if state.level.units[state.indicator.position.y][state.indicator.position.x].stats.remaining_movement:
                     state.flags.player_moving = True
+
+
+    def update_animation_handler(self, state):
+        # TODO: Add pygame.sprite.Sprite to unit class
+        # TODO: Add players and enemys to sprite groups
+        # TODO: Call update on AllSprites group instead of manually looping through them
+        for player in state.level.players:
+            player.idle_animation(state)
+        for enemy in state.level.enemys:
+            enemy.idle_animation(state)
+        state.screen.render_unit(state.indicator)
+        pygame.display.update()
+
+class CustomEvents():
+    def __init__(self):
+        self.UPDATE_ANIMATION = pygame.USEREVENT + 1

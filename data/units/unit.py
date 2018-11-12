@@ -2,6 +2,7 @@
 Placeholder
 """
 
+import pygame
 
 class Unit():
     def __init__(self, init_pos_tuple, stats_dict):
@@ -28,6 +29,12 @@ class Unit():
     def update_prev_position(self):
         self.prev_position.y = int(self.position.y)
         self.prev_position.x = int(self.position.x)
+
+    # TODO: This probably shoudn't be here or image class property should move (it works but using property that only exist on classes that use this seems dangerous)
+    def idle_animation(self, state):
+        self.image = pygame.transform.flip(self.image, 1, 0)
+        state.screen.render_terrain(state.level.terrain[self.position.y][self.position.x], self.position.x, self.position.y)
+        state.screen.render_unit(self)
 
 
 class Stats():

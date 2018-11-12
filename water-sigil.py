@@ -11,6 +11,7 @@ from data.state import State
 from data.screen import Screen
 from data.levels.intro import Intro
 from data.event_handler import EventHandler
+from data.utils import audio
 
 pygame.init()
 state = State(Screen(), Intro(), Indicator((0, 0)))
@@ -33,12 +34,17 @@ for _enemy in state.level.enemys:
 
 pygame.display.update()
 
-pygame.mixer.music.load('./assets/audio/beepbox-poc.wav')
-pygame.mixer.music.play(-1)
+# TODO: Audio load/play should probably be handled in the level file
+# main_theme = audio.load_sound("audio/beepbox-poc.wav")
+# main_theme.play(-1)
+
+# Event to prompt updating to the next frame of units idle animation
+pygame.time.set_timer(event_handler.custom_events.UPDATE_ANIMATION, 650)
 
 while 1:
     clock.tick(FPS)
-
+    # TODO: Now that updating the display on every frame has been decided. Clear out all other pygame.display.update()s from the code
+    pygame.display.update() 
 
     if state.flags.player_won:
         state.level.end_game('You Win')
@@ -46,8 +52,8 @@ while 1:
     state.flags.update = False
 
     if state.flags.player_turn:
-        state.screen.display_context_message("Player Turn")
-        pygame.display.update()
+        # TODO: Move current turn message to some other part of the UI
+        # state.screen.display_context_message("Player Turn")
         
         for event in pygame.event.get():
             event_handler.handle(event, state)
@@ -58,16 +64,13 @@ while 1:
             state.screen.move_indicator(state)
             state.level.update_unit_info(state)
             state.screen.display_terrain_info(state)
-            pygame.display.update()
 
             # TODO: this should check on movement not on every cyle...
             state.level.check_for_turn_end(state, state.level.players)
 
-
     else:
-        state.screen.display_context_message("Enemy Turn")
+        # TODO: Move current turn message to some other part of the UI
+        # state.screen.display_context_message("Enemy Turn")
         state.level.enemy_turn(state)
-        pygame.display.update()
-        # state.level.check_for_turn_end(state, state.level.enemys)
         state.level.reset_units_movement(state, state.level.enemys)
         state.flags.player_turn = not state.flags.player_turn

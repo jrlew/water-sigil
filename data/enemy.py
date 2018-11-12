@@ -2,7 +2,6 @@
 Placeholder
 """
 
-import os
 import pygame
 from .units.unit import Unit
 

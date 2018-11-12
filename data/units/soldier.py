@@ -7,8 +7,8 @@ from .job import Job
 class Soldier(Job):
     def __init__(self, teamColor):
         self.info = {
-            "image_active_path": "../../assets/characters/{team}/soldier/{team}-soldier.png".format(team=teamColor),
-            "image_inactive_path": "../../assets/characters/{team}/soldier/{team}-soldier-inactive.png".format(team=teamColor),
+            "image_active_path": "characters/{team}/soldier/{team}-soldier.png".format(team=teamColor),
+            "image_inactive_path": "characters/{team}/soldier/{team}-soldier-inactive.png".format(team=teamColor),
             "stats": {
                 "name": "Soldier",
                 "hp": 10,
