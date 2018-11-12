@@ -33,6 +33,9 @@ for _enemy in state.level.enemys:
 
 pygame.display.update()
 
+pygame.mixer.music.load('./assets/audio/beepbox-poc.wav')
+pygame.mixer.music.play(-1)
+
 while 1:
     clock.tick(FPS)
 
