@@ -36,7 +36,11 @@ class Unit(pygame.sprite.Sprite):
 
     # TODO: This probably shoudn't be here or image class property should move (it works but using property that only exist on classes that use this seems dangerous)
     def idle_animation(self, state):
-        self.image = pygame.transform.flip(self.image, 1, 0)
+        if self.is_idle_1:
+                self.image = self.idle_2
+        else:
+                self.image = self.idle_1
+        self.is_idle_1 = not self.is_idle_1
         state.screen.render_terrain(state.level.terrain[self.position.y][self.position.x], self.position.x, self.position.y)
         state.screen.render_unit(self)
 
