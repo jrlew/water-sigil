@@ -4,8 +4,9 @@ Placeholder
 
 import pygame
 
-class Unit():
+class Unit(pygame.sprite.Sprite):
     def __init__(self, init_pos_tuple, stats_dict):
+        pygame.sprite.Sprite.__init__(self)
         self.position = Position(init_pos_tuple)
         self.prev_position = Position(init_pos_tuple)
         self.stats = Stats(stats_dict)
@@ -29,6 +30,9 @@ class Unit():
     def update_prev_position(self):
         self.prev_position.y = int(self.position.y)
         self.prev_position.x = int(self.position.x)
+
+    def update(self, state):
+        self.idle_animation(state)
 
     # TODO: This probably shoudn't be here or image class property should move (it works but using property that only exist on classes that use this seems dangerous)
     def idle_animation(self, state):

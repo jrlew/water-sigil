@@ -4,14 +4,16 @@ Placeholder
 
 import sys
 from random import randint
+import pygame
 
 from ..player import Player
 
 class Level():
     def __init__(self, name, players, enemys, terrain, units):
         self.name = name
-        self.players = players
-        self.enemys = enemys
+        self.players = pygame.sprite.Group(players)
+        self.enemys = pygame.sprite.Group(enemys)
+        self.all_sprites = pygame.sprite.Group(players + enemys)
         self.terrain = terrain
         self.units = units
         self.height = len(units)

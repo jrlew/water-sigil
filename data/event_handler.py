@@ -101,13 +101,10 @@ class EventHandler():
 
 
     def update_animation_handler(self, state):
-        # TODO: Add pygame.sprite.Sprite to unit class
-        # TODO: Add players and enemys to sprite groups
-        # TODO: Call update on AllSprites group instead of manually looping through them
-        for player in state.level.players:
-            player.idle_animation(state)
-        for enemy in state.level.enemys:
-            enemy.idle_animation(state)
+        if state.flags.player_turn:
+            state.level.players.update(state)
+        else:
+            state.level.enemys.update(state)
         state.screen.render_unit(state.indicator)
         pygame.display.update()
 
