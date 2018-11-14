@@ -1,25 +1,38 @@
-# fe-pygame
+# Water Sigil
 Fire Emblem/Advance Wars mashup built using PyGame
 
 Uses Python 3
-Run with 'python main.py'
 
-### TODOs ###
-Clean up usage of state in class methods
-Come up with a better name than state
-Clean up Intro and Level classes
-Create base class for terrain and units to cover entities with image/position
-Use ^ class instead of Units for Indicator base to remove stats
+pip install pygame
 
-===== Classes =====
-1.Soldier (1 point cardinal) 
-2.Knight  (2 point cardinal)
-2.Mage (1 point diag)
-4.Archer (1 point, cardinal, only attacks 2 spaces away)
-5.
+Run with 'python water-sigil.py'
+
+## TODOs ##
+* Expand enemy movement bahaviors
+    * Seek and Destroy nearest player controlled character
+    * Stationary but attack an adjacent player controlled character
+    * Attack weakest reachable player controlled player
+* Setup trigger system to change Enemy Units movement bahavior based on player choices (stationary until a player unit moves past (x, y) )
+* End Unit turn after attacking for player and enemy controlled characters
+* Modify turn state flags to prevent player from moving until enemy turn is done taking place
+* Create determine_turn function (name pending) for Enemy Unit that chooses movement behavior based on Unit characteristics
+* Modify enemy_movement_queue to accept Enemy instances instead of being populated with parameters for a move function
+* Add level select menu
+* Winning level kicks back to menu
+* Add more levels
+* Add save system to gate levels until completing the prior level
+
+### Systems ###
+
+#### Classes ####
+        1. Soldier (1 point cardinal) 
+        2. Knight  (2 point cardinal)
+        3. Mage (1 point diag)
+        4. Archer (1 point, cardinal, only attacks 2 spaces away)
+        5.
 
 
-==== Movement System ====
+#### Movement System ####
 
 Turn Point pool - spend to activate a units turn. Each unit has unique movement pattern/distance.
 e.g. spend 1 turn point to move a pikeman up 2 squares, or to move a swordsman to the side 1 square.
@@ -28,10 +41,10 @@ DISTANT FUTURE- Add a unit recruitment system. You play as a hedge knight that h
 
 Unit Directional system (maybe)
 
-==== Attack System ====
+#### Attack System ####
 
 
-==== Artwork ====
+#### Artwork ####
 
 file names are arranged as follows: ogbject-direction(if final tile in a given direction) - tile that comes next in said direction
         e.g. 'mountain-left-grass'     denotes that the object is a mountain, that it is the leftmost mountain of a cluster, and that the next tile to the left is a grass tile.

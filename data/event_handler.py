@@ -13,6 +13,7 @@ class EventHandler():
         self.placholder = True
         self.custom_events = CustomEvents()
 
+
     def handle(self, event, state):
         if event.type == pygame.QUIT:
             state.level.end_game('Game Over')
@@ -28,7 +29,10 @@ class EventHandler():
             elif event.key == pygame.K_RETURN:
                 self.enter_key_handler(state)
         elif event.type == self.custom_events.UPDATE_ANIMATION:
-                self.update_animation_handler(state)
+            self.update_animation_handler(state)
+        elif event.type == self.custom_events.ADVANCE_ENEMY_TURN:
+            if state.level.enemy_movement_queue:
+                state.level.move_enemy_unit(state, state.level.enemy_movement_queue.pop(0))
 
 
     def up_key_handler(self, state):
@@ -101,13 +105,14 @@ class EventHandler():
 
 
     def update_animation_handler(self, state):
-        if state.flags.player_turn:
-            state.level.players.update(state)
-        else:
-            state.level.enemys.update(state)
+        # if state.flags.player_turn:
+        state.level.players.update(state)
+        # else:
+        state.level.enemys.update(state)
         state.screen.render_unit(state.indicator)
         pygame.display.update()
 
 class CustomEvents():
     def __init__(self):
         self.UPDATE_ANIMATION = pygame.USEREVENT + 1
+        self.ADVANCE_ENEMY_TURN = pygame.USEREVENT + 2

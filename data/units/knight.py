@@ -2,9 +2,7 @@
 Placeholder
 """
 
-from .job import Job
-
-class Knight(Job):
+class Knight():
     def __init__(self, teamColor):
         self.info = {
             "image_active_path": "characters/{team}/knight/{team}-knight.png".format(team=teamColor),
@@ -21,4 +19,3 @@ class Knight(Job):
                 "movement": 3,
             },
         }
-        Job.__init__(self, self.info)

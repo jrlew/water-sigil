@@ -3,36 +3,54 @@ Placeholder
 """
 
 import pygame
+from ..utils import image
 
 class Unit(pygame.sprite.Sprite):
-    def __init__(self, init_pos_tuple, stats_dict):
+    def __init__(self, init_pos_tuple, info):
         pygame.sprite.Sprite.__init__(self)
+
         self.position = Position(init_pos_tuple)
         self.prev_position = Position(init_pos_tuple)
-        self.stats = Stats(stats_dict)
+
+        self.stats = Stats(info["stats"])
+
+        self.image_active = image.load_png(info["image_active_path"])
+        self.image_inactive = image.load_png(info["image_inactive_path"])
+        self.image = self.image_active
+        self.is_idle_1 = True
+        self.idle_1 = image.load_png(info["idle_1_path"])
+        self.idle_2 = image.load_png(info["idle_2_path"])
+        self.rect = self.image.get_rect()
+
 
     def up(self):
         self.update_prev_position()
         self.position.y -= 1
 
+
     def down(self):
         self.update_prev_position()
         self.position.y += 1
+
 
     def left(self):
         self.update_prev_position()
         self.position.x -= 1
 
+
     def right(self):
         self.update_prev_position()
         self.position.x += 1
+
 
     def update_prev_position(self):
         self.prev_position.y = int(self.position.y)
         self.prev_position.x = int(self.position.x)
 
+
     def update(self, state):
         self.idle_animation(state)
+
 
     # TODO: This probably shoudn't be here or image class property should move (it works but using property that only exist on classes that use this seems dangerous)
     def idle_animation(self, state):

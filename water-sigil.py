@@ -40,6 +40,7 @@ pygame.display.update()
 
 # Event to prompt updating to the next frame of units idle animation
 pygame.time.set_timer(event_handler.custom_events.UPDATE_ANIMATION, 650)
+pygame.time.set_timer(event_handler.custom_events.ADVANCE_ENEMY_TURN, 500)
 
 while 1:
     clock.tick(FPS)
@@ -69,8 +70,9 @@ while 1:
             state.level.check_for_turn_end(state, state.level.players)
 
     else:
-        # TODO: Move current turn message to some other part of the UI
-        # state.screen.display_context_message("Enemy Turn")
-        state.level.enemy_turn(state)
-        state.level.reset_units_movement(state, state.level.enemys)
+        sprites = state.level.enemys.sprites()
+        
+        for unit in sprites:
+            for x in range(0, unit.stats.movement):
+                state.level.enemy_movement_queue.append(unit)
         state.flags.player_turn = not state.flags.player_turn

@@ -18,6 +18,7 @@ class Level():
         self.units = units
         self.height = len(units)
         self.width = len(units[0])
+        self.enemy_movement_queue = []
         for _player in players:
             self.units[_player.position.y][_player.position.x] = _player
         for _enemy in enemys:
@@ -74,39 +75,35 @@ class Level():
 
 
     def move_enemy_unit(self, state, unit):
-        for mp in range(unit.stats.movement):
-            unit.stats.remaining_movement -= 1
+        options = self.unit_to_attack(unit)
 
-            options = self.unit_to_attack(unit)
-            print("options", options)
+        if options:
+            self.attack(state, unit, options[0])
+        else:
+            up = self.is_valid_move(unit.position.x, unit.position.y - 1)
+            down = self.is_valid_move(unit.position.x, unit.position.y + 1)
+            left = self.is_valid_move(unit.position.x - 1, unit.position.y)
+            right = self.is_valid_move(unit.position.x + 1, unit.position.y)
 
-            if options:
-                self.attack(state, unit, options[0])
-            else:
-                up = self.is_valid_move(unit.position.x, unit.position.y - 1)
-                down = self.is_valid_move(unit.position.x, unit.position.y + 1)
-                left = self.is_valid_move(unit.position.x - 1, unit.position.y)
-                right = self.is_valid_move(unit.position.x + 1, unit.position.y)
+            move = randint(0, 3)
+            if move == 0: 
+                if up:
+                    unit.up()
+            elif move == 1:
+                if down: 
+                    unit.down()
+            elif move == 2: 
+                if left:
+                    unit.left()
+            elif move == 3: 
+                if right:
+                    unit.right()
 
-                move = randint(0, 3)
-                if move == 0: 
-                    if up:
-                        unit.up()
-                elif move == 1:
-                    if down: 
-                        unit.down()
-                elif move == 2: 
-                    if left:
-                        unit.left()
-                elif move == 3: 
-                    if right:
-                        unit.right()
+            prev_terrain = self.terrain[unit.prev_position.y][unit.prev_position.x]
+            state.screen.render_terrain(prev_terrain, unit.prev_position.x, unit.prev_position.y)
+            state.screen.render_unit(unit)
 
-                prev_terrain = self.terrain[unit.prev_position.y][unit.prev_position.x]
-                state.screen.render_terrain(prev_terrain, unit.prev_position.x, unit.prev_position.y)
-                state.screen.render_unit(unit)
-
-                self.update_unit_location(state, unit)
+            self.update_unit_location(state, unit)
 
 
     def unit_to_attack(self, unit):
