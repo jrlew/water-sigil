@@ -1,10 +1,11 @@
 import pygame as pg
 from .state import State
 
+# TODO: Find a better name for this
+# Phase for Non-Paired Indicator
 class PlayerPhase(State):
     def __init__(self):
         super(PlayerPhase, self).__init__()
-        print("Got to the player phase but nothing happens here")
         self.done = False
         self.quit = False
         self.next_state = None
@@ -13,19 +14,9 @@ class PlayerPhase(State):
         self.font = pg.font.Font(None, 24)
 
     def startup(self, persistent):
-        """
-        Called when a state resumes being active.
-        Allows information to be passed between states.
-
-        persistent: a dict passed from state to state
-        """
         self.persist = persistent
-        # print(self.persist)
 
     def get_event(self, event):
-        """
-        Handle a single event passed by the Game object.
-        """
         if event.type == pg.QUIT:
             self.quit = True
         elif event.type == pg.KEYUP:
@@ -40,19 +31,20 @@ class PlayerPhase(State):
             
 
     def update(self, dt):
-        """
-        Update the state. Called by the Game object once
-        per frame. 
-
-        dt: time since last frame
-        """
         pass
 
     def draw(self, screen):
-        """
-        Draw everything to the screen.
-        """
+        # Clean Up Previoius Square 
         screen.render_terrain(self.persist["terrain"][self.persist["indicator"].prev_position.y][self.persist["indicator"].prev_position.x], self.persist["indicator"].prev_position.x, self.persist["indicator"].prev_position.y)
-        screen.render_terrain(self.persist["terrain"][self.persist["indicator"].position.y][self.persist["indicator"].position.x], self.persist["indicator"].position.x, self.persist["indicator"].position.y)
+        if not self.persist["units"][self.persist["indicator"].prev_position.y][self.persist["indicator"].prev_position.x] == 0:
+            screen.render_unit(self.persist["units"][self.persist["indicator"].prev_position.y][self.persist["indicator"].prev_position.x])        
+        screen.clear_info_pane()
+
+        # Do The New Square
+        screen.render_terrain(self.persist["terrain"][self.persist["indicator"].position.y][self.persist["indicator"].position.x], self.persist["indicator"].position.x, self.persist["indicator"].position.y)        
+        screen.display_terrain_info(self.persist["terrain"][self.persist["indicator"].prev_position.y][self.persist["indicator"].prev_position.x])
+        if not self.persist["units"][self.persist["indicator"].position.y][self.persist["indicator"].position.x] == 0:
+            screen.display_unit_info(self.persist["units"][self.persist["indicator"].position.y][self.persist["indicator"].position.x].stats)
+            screen.render_unit(self.persist["units"][self.persist["indicator"].position.y][self.persist["indicator"].position.x])
         screen.render_unit(self.persist["indicator"])
 

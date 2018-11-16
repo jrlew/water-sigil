@@ -4,8 +4,8 @@ from data.game import Game
 from data.levelone import Level1
 from data.leveltwo import Level2
 
-from data.levelinit import LevelInit
-from data.playerphase import PlayerPhase
+from data.states.levelinit import LevelInit
+from data.states.playerphase import PlayerPhase
 
 from data.screen import Screen
 
@@ -20,7 +20,7 @@ levels = {
 chosen_level = ""
 waiting = True
 
-screen.init_info_pane()
+# TODO: Render some kind of Level Select
 pg.display.update()
 
 while waiting:

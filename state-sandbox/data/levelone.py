@@ -29,6 +29,7 @@ class Level1(object):
 
     def event_loop(self):
         """Events are passed for handling to the current state."""
+        # TODO: Try to handle idle animation here
         for event in pg.event.get():
             self.state.get_event(event)
 

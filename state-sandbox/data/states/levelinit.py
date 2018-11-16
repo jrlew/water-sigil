@@ -1,28 +1,30 @@
 import pygame as pg
 from .state import State
 
-from .terrain.plain import Plain
-from .terrain.mountain import Mount
-from .terrain.mountainbottom import MountBottom
-from .terrain.mountainbottomleftgrass import MountBottomLeftGrass
-from .terrain.mountainbottomrightgrass import MountBottomRightGrass
-from .terrain.mountaingrass import MountGrass
-from .terrain.mountainleftgrass import MountLeftGrass
-from .terrain.mountainleftmountain import MountLeftMount
-from .terrain.mountainrightgrass import MountRightGrass
-from .terrain.mountainrightmountain import MountRightMount
-from .terrain.mountaintopleftgrass import MountTopLeftGrass
-from .terrain.forest import Forest
-from .terrain.fortress import Fortress
+from ..terrain.plain import Plain
+from ..terrain.mountain import Mount
+from ..terrain.mountainbottom import MountBottom
+from ..terrain.mountainbottomleftgrass import MountBottomLeftGrass
+from ..terrain.mountainbottomrightgrass import MountBottomRightGrass
+from ..terrain.mountaingrass import MountGrass
+from ..terrain.mountainleftgrass import MountLeftGrass
+from ..terrain.mountainleftmountain import MountLeftMount
+from ..terrain.mountainrightgrass import MountRightGrass
+from ..terrain.mountainrightmountain import MountRightMount
+from ..terrain.mountaintopleftgrass import MountTopLeftGrass
+from ..terrain.forest import Forest
+from ..terrain.fortress import Fortress
 
-from .indicator import Indicator
+from ..indicator import Indicator
+
+from ..enemy import Enemy
+from ..player import Player
+
+from ..units.knight import Knight
+from ..units.soldier import Soldier
 
 
 class LevelInit(State):
-    """
-    Parent class for individual game states to inherit from. 
-    """
-
     def __init__(self):
         super(LevelInit, self).__init__()
         PLAIN = Plain()
@@ -60,46 +62,47 @@ class LevelInit(State):
         ]
         self.indicator = Indicator((0, 0))
 
-    def startup(self, persistent):
-        """
-        Called when a state resumes being active.
-        Allows information to be passed between states.
 
-        persistent: a dict passed from state to state
-        """
+    def startup(self, persistent):
         self.persist = persistent
 
     def get_event(self, event):
-        """
-        Handle a single event passed by the Game object.
-        """
         if event.type == pg.QUIT:
             self.quit = True
 
     def update(self, dt):
-        """
-        Update the state. Called by the Game object once
-        per frame. 
-
-        dt: time since last frame
-        """
         self.persist["terrain"] = self.terrain
         self.persist["PIXEL_SIZE"] = 32
         self.persist["indicator"] = self.indicator
+        self.persist["enemys"] = pg.sprite.Group([
+            Enemy((3, 6), Soldier("red")),
+            Enemy((2, 7), Knight("red")),
+        ])
+        self.persist["players"] = pg.sprite.Group([
+            Player((2, 2), Knight("blue"))
+        ])
+        self.persist["all_units"] = pg.sprite.Group(self.persist["players"].sprites() + self.persist["enemys"].sprites())
+        self.persist["units"] = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        ]
+        for unit in self.persist["all_units"].sprites():
+            self.persist["units"][unit.position.y][unit.position.x] = unit
 
     def draw(self, screen):
-        """
-        Draw everything to the screen.
-        """
+        screen.init_info_pane()
+        screen.init_context_menu()
         screen.init_screen(self.persist["terrain"])
-        # PIXEL_SIZE = 32
-        # y_coord = 0
-        # for row in self.terrain:
-        #     x_coord = 0
-        #     for col in row:
-        #         screen.display.blit(col.image, (x_coord, y_coord))
-        #         x_coord += self.PIXEL_SIZE
-        #     y_coord += self.PIXEL_SIZE
-        # screen.display.blit(self.persist["indicator"].image, (self.persist["indicator"].position.x * self.PIXEL_SIZE, self.persist["indicator"].position.y * self.PIXEL_SIZE))
         screen.render_unit(self.persist["indicator"])
+        screen.display_terrain_info(self.persist["terrain"][self.persist["indicator"].prev_position.y][self.persist["indicator"].prev_position.x])
+        for unit in self.persist["all_units"].sprites():
+            screen.render_unit(unit)
         self.done = True

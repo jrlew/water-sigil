@@ -7,7 +7,7 @@ import pygame
 size = width, height = 480, 360
 FONT_SIZE = 24
 PIXEL_SIZE = 32
-PIXEL_SIZE = 32
+WIDTH = 10
 WHITE = 255, 255, 255
 BLACK = 0, 0, 0
 MSG_WIDTH = 150
@@ -50,8 +50,8 @@ class Screen():
 
 
     # TODO: Clean up formatting
-    def display_unit_info(self, state, stats):
-        info_pane_x_offset = state.level.width * PIXEL_SIZE
+    def display_unit_info(self, stats):
+        info_pane_x_offset = WIDTH * PIXEL_SIZE
         info = [
             "{name} {remaining_move}/{max_move}".format(name=stats.name, remaining_move=stats.remaining_movement, max_move=stats.movement),
             "HP: {hp} / {maxhp}".format(hp=stats.current_hp, maxhp=stats.max_hp),
@@ -65,13 +65,12 @@ class Screen():
 
 
     # TODO: Clean up parameters
-    def display_terrain_info(self, state):
-        info_pane_x_offset = state.level.width * PIXEL_SIZE
-        ter = state.level.terrain[state.indicator.position.y][state.indicator.position.x]
+    def display_terrain_info(self, terrain):
+        info_pane_x_offset = WIDTH * PIXEL_SIZE
         terrain_info = [
-            "{type}".format(type=ter.type),
-            "Def: {def_adjustment}".format(def_adjustment=ter.def_adjustment),
-            "Evd: {evasion_adjustment}".format(evasion_adjustment=ter.evasion_adjustment),
+            "{type}".format(type=terrain.type),
+            "Def: {def_adjustment}".format(def_adjustment=terrain.def_adjustment),
+            "Evd: {evasion_adjustment}".format(evasion_adjustment=terrain.evasion_adjustment),
         ]
         y_offset = 195
         for line in terrain_info:
@@ -84,8 +83,8 @@ class Screen():
         self.display.blit(self.font.render(msg_text, 1, (200, 200, 200)), (8, 329))
 
 
-    def clear_info_pane(self, state):
-        info_pane_x_offset = state.level.width * PIXEL_SIZE
+    def clear_info_pane(self):
+        info_pane_x_offset = WIDTH * PIXEL_SIZE
         pygame.draw.rect(self.display, BLACK, [info_pane_x_offset + 4, 34, MSG_WIDTH, MSG_HEIGHT], 0)
         pygame.draw.rect(self.display, BLACK, [info_pane_x_offset + 4, 195, MSG_WIDTH, MSG_HEIGHT], 0)
 
