@@ -6,6 +6,7 @@ from data.leveltwo import Level2
 
 from data.states.levelinit import LevelInit
 from data.states.playerphase import PlayerPhase
+from data.states.unitphase import UnitPhase
 
 from data.screen import Screen
 
@@ -39,6 +40,7 @@ while waiting:
 states = {
     "Level_Init": LevelInit(),
     "Player_Phase": PlayerPhase(),
+    "UnitPhase": UnitPhase(),
 }
 
 game = levels[chosen_level](screen, states, "Level_Init")

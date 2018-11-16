@@ -23,24 +23,28 @@ class Unit(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
 
 
-    def up(self):
+    def up(self, units):
         self.update_prev_position()
         self.position.y -= 1
+        self.update_unit_location(units)
 
 
-    def down(self):
+    def down(self, units):
         self.update_prev_position()
         self.position.y += 1
+        self.update_unit_location(units)
 
 
-    def left(self):
+    def left(self, units):
         self.update_prev_position()
         self.position.x -= 1
+        self.update_unit_location(units)
 
 
-    def right(self):
+    def right(self, units):
         self.update_prev_position()
         self.position.x += 1
+        self.update_unit_location(units)
 
 
     def update_prev_position(self):
@@ -50,6 +54,18 @@ class Unit(pygame.sprite.Sprite):
 
     def update(self, state):
         self.idle_animation(state)
+
+    
+    # TODO: This should probably be a tempt location
+    def update_unit_location(self, units):
+        units[self.prev_position.y][self.prev_position.x] = 0
+        units[self.position.y][self.position.x] = self
+        self.stats.remaining_movement -= 1
+        # TODO: Reempliment movement subtraction
+        # TODO: Add check in movement phase to block movement after emptied
+        # if not unit.stats.remaining_movement:
+        #     unit.image = unit.image_inactive
+        #     state.flags.player_moving = not state.flags.player_moving
 
 
     # TODO: This probably shoudn't be here or image class property should move (it works but using property that only exist on classes that use this seems dangerous)
