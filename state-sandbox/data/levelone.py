@@ -1,3 +1,4 @@
+import sys
 import pygame as pg
 
 
@@ -26,12 +27,17 @@ class Level1(object):
         self.states = states
         self.state_name = start_state
         self.state = self.states[self.state_name]
+        self.state.persist["screen"] = self.screen
 
     def event_loop(self):
         """Events are passed for handling to the current state."""
         # TODO: Try to handle idle animation here
         for event in pg.event.get():
-            self.state.get_event(event)
+            if event.type == pg.QUIT:
+                self.quit = True
+                sys.exit()
+            else:
+                self.state.get_event(event)
 
     def flip_state(self):
         """Switch to the next game state."""

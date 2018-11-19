@@ -2,12 +2,14 @@
 Placeholder
 """
 
-import pygame
+import pygame as pg
+from random import randint
 from ..tools import image
+from ..terrain.attackoverlay import AttackOverlay
 
-class Unit(pygame.sprite.Sprite):
+class Unit(pg.sprite.Sprite):
     def __init__(self, init_pos_tuple, info):
-        pygame.sprite.Sprite.__init__(self)
+        pg.sprite.Sprite.__init__(self)
 
         self.position = Position(init_pos_tuple)
         self.prev_position = Position(init_pos_tuple)
@@ -47,6 +49,14 @@ class Unit(pygame.sprite.Sprite):
         self.update_unit_location(units)
 
 
+    def display_attack_overlay(self, screen):
+        attack_overlay = AttackOverlay()
+        screen.render_terrain(attack_overlay, self.position.x - 1, self.position.y)
+        screen.render_terrain(attack_overlay, self.position.x + 1, self.position.y)
+        screen.render_terrain(attack_overlay, self.position.x, self.position.y - 1)
+        screen.render_terrain(attack_overlay, self.position.x, self.position.y + 1)
+
+
     def update_prev_position(self):
         self.prev_position.y = int(self.position.y)
         self.prev_position.x = int(self.position.x)
@@ -61,11 +71,6 @@ class Unit(pygame.sprite.Sprite):
         units[self.prev_position.y][self.prev_position.x] = 0
         units[self.position.y][self.position.x] = self
         self.stats.remaining_movement -= 1
-        # TODO: Reempliment movement subtraction
-        # TODO: Add check in movement phase to block movement after emptied
-        # if not unit.stats.remaining_movement:
-        #     unit.image = unit.image_inactive
-        #     state.flags.player_moving = not state.flags.player_moving
 
 
     # TODO: This probably shoudn't be here or image class property should move (it works but using property that only exist on classes that use this seems dangerous)
@@ -77,6 +82,15 @@ class Unit(pygame.sprite.Sprite):
         self.is_idle_1 = not self.is_idle_1
         state.screen.render_terrain(state.level.terrain[self.position.y][self.position.x], self.position.x, self.position.y)
         state.screen.render_unit(self)
+
+    def attack(self, screen, defending_unit, terrain):
+        if self.stats.accuracy - defending_unit.stats.evasion  - terrain.evasion_adjustment > randint(0, 100):
+            defending_unit.stats.current_hp -= self.stats.strength - defending_unit.stats.defense - terrain.def_adjustment
+            screen.display_context_message("Hit Enemy. Remaining HP: {hp}".format(hp=defending_unit.stats.current_hp))
+            # TODO: Reimplement this
+            # self.check_for_unit_death(state, self.units[defending_unit.position.y][defending_unit.position.x])
+        else:
+            screen.display_context_message("Attack Missed!")
 
 
 class Stats():

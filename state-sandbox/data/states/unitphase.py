@@ -24,9 +24,7 @@ class UnitPhase(object):
         self.persist = persistent
 
     def get_event(self, event):
-        if event.type == pg.QUIT:
-            self.quit = True
-        elif event.type == pg.KEYUP:
+        if event.type == pg.KEYUP:
             if event.key == pg.K_UP:
                 self.persist["indicator"].up()
                 self.persist["paired_unit"].up(self.persist["units"])
@@ -41,7 +39,10 @@ class UnitPhase(object):
                 self.persist["paired_unit"].left(self.persist["units"])
 
     def update(self, dt):
-        pass
+        if self.persist["paired_unit"].stats.remaining_movement == 0:
+            print("Change state")
+            self.done = True
+            self.next_state = "UnitAttackPhase"
 
     def draw(self, screen):
         # TODO: Duplication with PlayerPhase

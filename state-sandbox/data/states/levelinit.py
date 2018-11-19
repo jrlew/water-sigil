@@ -67,8 +67,7 @@ class LevelInit(State):
         self.persist = persistent
 
     def get_event(self, event):
-        if event.type == pg.QUIT:
-            self.quit = True
+        pass
 
     def update(self, dt):
         self.persist["terrain"] = self.terrain

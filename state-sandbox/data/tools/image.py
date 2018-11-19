@@ -5,6 +5,7 @@ Placeholder
 import os
 import pygame
 
+# TODO: fix errors to be useful
 def load_png(name):
     """ Load image and return image object"""
     fullname = os.path.join(os.path.dirname(__file__), "../../assets", name)
