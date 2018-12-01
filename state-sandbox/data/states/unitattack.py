@@ -22,27 +22,27 @@ class UnitAttackPhase(object):
         """
         print("Got to the attack state")
         self.persist = persistent
-        self.persist["paired_unit"].display_attack_overlay(self.persist["screen"])
+        self.persist.paired_unit.display_attack_overlay(self.persist.screen)
 
     def get_event(self, event):
         if event.type == pg.KEYUP:
             if event.key == pg.K_UP:
-                self.persist["indicator"].up()
+                self.persist.indicator.up()
             elif event.key == pg.K_DOWN:
-                self.persist["indicator"].down()
+                self.persist.indicator.down()
             elif event.key == pg.K_RIGHT:
-                self.persist["indicator"].right()
+                self.persist.indicator.right()
             elif event.key == pg.K_LEFT:
-                self.persist["indicator"].left()
+                self.persist.indicator.left()
             # TODO: Move to enemy turn
             elif event.key == pg.K_RETURN:
-                if isinstance(self.persist["units"][self.persist["indicator"].position.y][self.persist["indicator"].position.x], Enemy):
-                    self.persist["paired_unit"].attack(
-                        self.persist["screen"],
-                        self.persist["units"][self.persist["indicator"].position.y][self.persist["indicator"].position.x],
-                        self.persist["terrain"][self.persist["indicator"].position.y][self.persist["indicator"].position.x]
+                if isinstance(self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x], Enemy):
+                    self.persist.paired_unit.attack(
+                        self.persist.screen,
+                        self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x],
+                        self.persist.terrain[self.persist.indicator.position.y][self.persist.indicator.position.x]
                     )
-                elif self.persist["units"][self.persist["indicator"].position.y][self.persist["indicator"].position.x] == self.persist["paired_unit"]:
+                elif self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x] == self.persist.paired_unit:
                     print("This should end the players turn")
 
     def update(self, dt):
@@ -58,15 +58,15 @@ class UnitAttackPhase(object):
         # TODO: Clean up duplication between player phases
         # TODO: Fix Attack Overlay disappearing
         # Clean Up Previoius Square 
-        screen.render_terrain(self.persist["terrain"][self.persist["indicator"].prev_position.y][self.persist["indicator"].prev_position.x], self.persist["indicator"].prev_position.x, self.persist["indicator"].prev_position.y)
-        if not self.persist["units"][self.persist["indicator"].prev_position.y][self.persist["indicator"].prev_position.x] == 0:
-            screen.render_unit(self.persist["units"][self.persist["indicator"].prev_position.y][self.persist["indicator"].prev_position.x])        
+        screen.render_terrain(self.persist.terrain[self.persist.indicator.prev_position.y][self.persist.indicator.prev_position.x], self.persist.indicator.prev_position.x, self.persist.indicator.prev_position.y)
+        if not self.persist.units[self.persist.indicator.prev_position.y][self.persist.indicator.prev_position.x] == 0:
+            screen.render_unit(self.persist.units[self.persist.indicator.prev_position.y][self.persist.indicator.prev_position.x])        
         screen.clear_info_pane()
 
         # Do The New Square
-        screen.render_terrain(self.persist["terrain"][self.persist["indicator"].position.y][self.persist["indicator"].position.x], self.persist["indicator"].position.x, self.persist["indicator"].position.y)        
-        screen.display_terrain_info(self.persist["terrain"][self.persist["indicator"].prev_position.y][self.persist["indicator"].prev_position.x])
-        if not self.persist["units"][self.persist["indicator"].position.y][self.persist["indicator"].position.x] == 0:
-            screen.display_unit_info(self.persist["units"][self.persist["indicator"].position.y][self.persist["indicator"].position.x].stats)
-            screen.render_unit(self.persist["units"][self.persist["indicator"].position.y][self.persist["indicator"].position.x])
-        screen.render_unit(self.persist["indicator"])
+        screen.render_terrain(self.persist.terrain[self.persist.indicator.position.y][self.persist.indicator.position.x], self.persist.indicator.position.x, self.persist.indicator.position.y)        
+        screen.display_terrain_info(self.persist.terrain[self.persist.indicator.prev_position.y][self.persist.indicator.prev_position.x])
+        if not self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x] == 0:
+            screen.display_unit_info(self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x].stats)
+            screen.render_unit(self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x])
+        screen.render_unit(self.persist.indicator)

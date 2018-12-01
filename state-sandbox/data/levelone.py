@@ -1,6 +1,8 @@
 import sys
 import pygame as pg
 
+from .customevents import CustomEvents
+
 
 class Level1(object):
     """
@@ -27,7 +29,8 @@ class Level1(object):
         self.states = states
         self.state_name = start_state
         self.state = self.states[self.state_name]
-        self.state.persist["screen"] = self.screen
+        self.custom_events = CustomEvents() # TODO: determine if this should go in persist
+        # self.persist.screen = self.screen
 
     def event_loop(self):
         """Events are passed for handling to the current state."""
@@ -36,6 +39,9 @@ class Level1(object):
             if event.type == pg.QUIT:
                 self.quit = True
                 sys.exit()
+            elif event.type == self.custom_events.UPDATE_ANIMATION:
+                # self.update_animation_handler(state)
+                self.state.persist.all_units.update(self.state.persist)
             else:
                 self.state.get_event(event)
 
@@ -46,6 +52,7 @@ class Level1(object):
         self.state.done = False
         self.state_name = next_state
         persistent = self.state.persist
+        persistent.screen = self.screen # TODO: Orgaization of persist needs to be better. This shouldn't need to be assigned on each state change
         self.state = self.states[self.state_name]
         self.state.startup(persistent)
 
@@ -70,6 +77,8 @@ class Level1(object):
         Pretty much the entirety of the game's runtime will be
         spent inside this while loop.
         """
+        pg.time.set_timer(self.custom_events.UPDATE_ANIMATION, 650)
+
         while not self.done:
             dt = self.clock.tick(self.fps)
             self.event_loop()

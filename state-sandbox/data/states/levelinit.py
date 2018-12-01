@@ -23,6 +23,7 @@ from ..player import Player
 from ..units.knight import Knight
 from ..units.soldier import Soldier
 
+from ..persist import Persist
 
 class LevelInit(State):
     def __init__(self):
@@ -45,7 +46,7 @@ class LevelInit(State):
         self.quit = False
         self.next_state = "Player_Phase"
         self.screen_rect = pg.display.get_surface().get_rect()
-        self.persist = {}
+        self.persist = Persist()
         self.font = pg.font.Font(None, 24)
         self.PIXEL_SIZE = 32
         self.terrain = [
@@ -70,18 +71,18 @@ class LevelInit(State):
         pass
 
     def update(self, dt):
-        self.persist["terrain"] = self.terrain
-        self.persist["PIXEL_SIZE"] = 32
-        self.persist["indicator"] = self.indicator
-        self.persist["enemys"] = pg.sprite.Group([
+        self.persist.terrain = self.terrain
+        self.persist.PIXEL_SIZE = 32
+        self.persist.indicator = self.indicator
+        self.persist.enemys = pg.sprite.Group([
             Enemy((3, 6), Soldier("red")),
             Enemy((2, 7), Knight("red")),
         ])
-        self.persist["players"] = pg.sprite.Group([
+        self.persist.players = pg.sprite.Group([
             Player((2, 2), Knight("blue"))
         ])
-        self.persist["all_units"] = pg.sprite.Group(self.persist["players"].sprites() + self.persist["enemys"].sprites())
-        self.persist["units"] = [
+        self.persist.all_units = pg.sprite.Group(self.persist.players.sprites() + self.persist.enemys.sprites())
+        self.persist.units = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -93,15 +94,15 @@ class LevelInit(State):
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         ]
-        for unit in self.persist["all_units"].sprites():
-            self.persist["units"][unit.position.y][unit.position.x] = unit
+        for unit in self.persist.all_units.sprites():
+            self.persist.units[unit.position.y][unit.position.x] = unit
 
     def draw(self, screen):
         screen.init_info_pane()
         screen.init_context_menu()
-        screen.init_screen(self.persist["terrain"])
-        screen.render_unit(self.persist["indicator"])
-        screen.display_terrain_info(self.persist["terrain"][self.persist["indicator"].prev_position.y][self.persist["indicator"].prev_position.x])
-        for unit in self.persist["all_units"].sprites():
+        screen.init_screen(self.persist.terrain)
+        screen.render_unit(self.persist.indicator)
+        screen.display_terrain_info(self.persist.terrain[self.persist.indicator.prev_position.y][self.persist.indicator.prev_position.x])
+        for unit in self.persist.all_units.sprites():
             screen.render_unit(unit)
         self.done = True

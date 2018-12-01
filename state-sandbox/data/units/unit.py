@@ -62,8 +62,8 @@ class Unit(pg.sprite.Sprite):
         self.prev_position.x = int(self.position.x)
 
 
-    def update(self, state):
-        self.idle_animation(state)
+    def update(self, persist):
+        self.idle_animation(persist)
 
     
     # TODO: This should probably be a tempt location
@@ -74,14 +74,15 @@ class Unit(pg.sprite.Sprite):
 
 
     # TODO: This probably shoudn't be here or image class property should move (it works but using property that only exist on classes that use this seems dangerous)
-    def idle_animation(self, state):
+    def idle_animation(self, persist):
         if self.is_idle_1:
-                self.image = self.idle_2
+            self.image = self.idle_2
         else:
-                self.image = self.idle_1
+            self.image = self.idle_1
+
         self.is_idle_1 = not self.is_idle_1
-        state.screen.render_terrain(state.level.terrain[self.position.y][self.position.x], self.position.x, self.position.y)
-        state.screen.render_unit(self)
+        persist.screen.render_terrain(persist.terrain[self.position.y][self.position.x], self.position.x, self.position.y)
+        persist.screen.render_unit(self)
 
     def attack(self, screen, defending_unit, terrain):
         if self.stats.accuracy - defending_unit.stats.evasion  - terrain.evasion_adjustment > randint(0, 100):
