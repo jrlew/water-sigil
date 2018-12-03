@@ -38,18 +38,13 @@ class PlayerPhase(State):
         pass
 
     def draw(self, screen):
-        # TODO: Duplication with UnitPhase
-        # Clean Up Previoius Square 
-        screen.render_terrain(self.persist.terrain[self.persist.indicator.prev_position.y][self.persist.indicator.prev_position.x], self.persist.indicator.prev_position.x, self.persist.indicator.prev_position.y)
-        if not self.persist.units[self.persist.indicator.prev_position.y][self.persist.indicator.prev_position.x] == 0:
-            screen.render_unit(self.persist.units[self.persist.indicator.prev_position.y][self.persist.indicator.prev_position.x])        
-        screen.clear_info_pane()
+        # TODO: Clean up duplication between player phases
+        # Resetting old square and setting up new square
+        screen.render_square(self.persist, self.persist.indicator.prev_position.x, self.persist.indicator.prev_position.y)
+        screen.render_square(self.persist, self.persist.indicator.position.x, self.persist.indicator.position.y)
 
-        # Do The New Square
-        screen.render_terrain(self.persist.terrain[self.persist.indicator.position.y][self.persist.indicator.position.x], self.persist.indicator.position.x, self.persist.indicator.position.y)        
-        screen.display_terrain_info(self.persist.terrain[self.persist.indicator.prev_position.y][self.persist.indicator.prev_position.x])
+        # Clear old info and setup new
+        screen.clear_info_pane()
+        screen.display_terrain_info(self.persist.terrain[self.persist.indicator.position.y][self.persist.indicator.position.x])
         if not self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x] == 0:
             screen.display_unit_info(self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x].stats)
-            screen.render_unit(self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x])
-        screen.render_unit(self.persist.indicator)
-

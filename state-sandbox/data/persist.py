@@ -1,8 +1,10 @@
 class Persist():
     def __init__(self):
         self.screen = None
+
         self.terrain = None
         self.units = None
+        self.highlights = None
 
         self.PIXEL_SIZE = None
 

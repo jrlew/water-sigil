@@ -49,12 +49,20 @@ class Unit(pg.sprite.Sprite):
         self.update_unit_location(units)
 
 
-    def display_attack_overlay(self, screen):
+    # def display_attack_overlay(self, screen):
+    #     attack_overlay = AttackOverlay()
+    #     screen.render_terrain(attack_overlay, self.position.x - 1, self.position.y)
+    #     screen.render_terrain(attack_overlay, self.position.x + 1, self.position.y)
+    #     screen.render_terrain(attack_overlay, self.position.x, self.position.y - 1)
+    #     screen.render_terrain(attack_overlay, self.position.x, self.position.y + 1)
+
+
+    def display_attack_overlay(self, persist):
         attack_overlay = AttackOverlay()
-        screen.render_terrain(attack_overlay, self.position.x - 1, self.position.y)
-        screen.render_terrain(attack_overlay, self.position.x + 1, self.position.y)
-        screen.render_terrain(attack_overlay, self.position.x, self.position.y - 1)
-        screen.render_terrain(attack_overlay, self.position.x, self.position.y + 1)
+        persist.highlights[self.position.y - 1][self.position.x] = attack_overlay
+        persist.highlights[self.position.y + 1][self.position.x] = attack_overlay
+        persist.highlights[self.position.y][self.position.x - 1] = attack_overlay
+        persist.highlights[self.position.y][self.position.x + 1] = attack_overlay
 
 
     def update_prev_position(self):

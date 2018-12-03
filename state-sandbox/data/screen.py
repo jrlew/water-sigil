@@ -103,8 +103,25 @@ class Screen():
         self.display.blit(unit.image, (unit.position.x * PIXEL_SIZE, unit.position.y * PIXEL_SIZE))
 
 
+    def render_unit_new(self, persist, x, y):
+        self.display.blit(persist.units[y][x].image, (x * PIXEL_SIZE, y * PIXEL_SIZE))
+
+
+    # TODO: deprecate in favor of new function to standarize render(blit) calls
     def render_terrain(self, terrain, x_coord, y_coord):
         self.display.blit(terrain.image, (x_coord * PIXEL_SIZE, y_coord * PIXEL_SIZE))
+
+
+    def render_terrain_new(self, persist, x, y):
+        self.display.blit(persist.terrain[y][x].image, (x * PIXEL_SIZE, y * PIXEL_SIZE))
+
+
+    def render_highlight(self, persist, x, y):
+        self.display.blit(persist.highlights[y][x].image, (x * PIXEL_SIZE, y * PIXEL_SIZE))
+
+
+    def render_indicator(self, persist):
+        self.display.blit(persist.indicator.image, (persist.indicator.position.x * PIXEL_SIZE, persist.indicator.position.y * PIXEL_SIZE))        
 
 
     def move_indicator(self, state):
@@ -118,3 +135,16 @@ class Screen():
 
         state.screen.render_unit(state.indicator)
     
+
+    # TODO: wrap calls in None checks
+    def render_square(self, persist, x, y):
+        self.render_terrain_new(persist, x, y)
+
+        if persist.units[y][x]:
+            self.render_unit_new(persist, x, y)
+
+        if persist.highlights[y][x]:
+            self.render_highlight(persist, x, y)
+
+        if persist.indicator.position.x == x and persist.indicator.position.y == y:
+            self.render_indicator(persist)

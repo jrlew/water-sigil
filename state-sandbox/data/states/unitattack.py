@@ -22,7 +22,13 @@ class UnitAttackPhase(object):
         """
         print("Got to the attack state")
         self.persist = persistent
-        self.persist.paired_unit.display_attack_overlay(self.persist.screen)
+        self.persist.paired_unit.display_attack_overlay(self.persist)
+        # Loop through highlighted squares to init the attack overlay
+        # TODO: Look into setting up array of highlighted squares instead of looping through 2d array
+        for y in range(len(self.persist.highlights)):
+            for x in range(len(self.persist.highlights[0])):
+                if self.persist.highlights[y][x]:
+                    self.persist.screen.display.blit(self.persist.highlights[y][x].image, (x  * 32, y * 32))
 
     def get_event(self, event):
         if event.type == pg.KEYUP:
@@ -56,17 +62,13 @@ class UnitAttackPhase(object):
 
     def draw(self, screen):
         # TODO: Clean up duplication between player phases
-        # TODO: Fix Attack Overlay disappearing
-        # Clean Up Previoius Square 
-        screen.render_terrain(self.persist.terrain[self.persist.indicator.prev_position.y][self.persist.indicator.prev_position.x], self.persist.indicator.prev_position.x, self.persist.indicator.prev_position.y)
-        if not self.persist.units[self.persist.indicator.prev_position.y][self.persist.indicator.prev_position.x] == 0:
-            screen.render_unit(self.persist.units[self.persist.indicator.prev_position.y][self.persist.indicator.prev_position.x])        
-        screen.clear_info_pane()
+        # Resetting old square and setting up new square
+        screen.render_square(self.persist, self.persist.indicator.prev_position.x, self.persist.indicator.prev_position.y)
+        screen.render_square(self.persist, self.persist.indicator.position.x, self.persist.indicator.position.y)
 
-        # Do The New Square
-        screen.render_terrain(self.persist.terrain[self.persist.indicator.position.y][self.persist.indicator.position.x], self.persist.indicator.position.x, self.persist.indicator.position.y)        
-        screen.display_terrain_info(self.persist.terrain[self.persist.indicator.prev_position.y][self.persist.indicator.prev_position.x])
+        # Clear old info and setup new
+        screen.clear_info_pane()
+        screen.display_terrain_info(self.persist.terrain[self.persist.indicator.position.y][self.persist.indicator.position.x])
         if not self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x] == 0:
             screen.display_unit_info(self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x].stats)
-            screen.render_unit(self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x])
-        screen.render_unit(self.persist.indicator)
+
