@@ -8,6 +8,7 @@ from data.states.levelinit import LevelInit
 from data.states.playerphase import PlayerPhase
 from data.states.unitphase import UnitPhase
 from data.states.unitattack import UnitAttackPhase
+from data.states.enemyphase import EnemyPhase
 
 from data.screen import Screen
 
@@ -43,6 +44,7 @@ states = {
     "Player_Phase": PlayerPhase(),
     "UnitPhase": UnitPhase(),
     "UnitAttackPhase": UnitAttackPhase(),
+    "EnemyPhase": EnemyPhase(),
 }
 
 game = levels[chosen_level](screen, states, "Level_Init")

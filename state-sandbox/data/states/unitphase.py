@@ -20,7 +20,7 @@ class UnitPhase(object):
 
         persistent: a dict passed from state to state
         """
-        print("Entering UnitPhase")
+        print("Unit Phase Beginning")
         self.persist = persistent
 
     def get_event(self, event):

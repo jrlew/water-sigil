@@ -20,7 +20,7 @@ class UnitAttackPhase(object):
 
         persistent: a dict passed from state to state
         """
-        print("Got to the attack state")
+        print('Unit Attack Phase Beginning')
         self.persist = persistent
         self.persist.paired_unit.display_attack_overlay(self.persist)
         # Loop through highlighted squares to init the attack overlay
@@ -42,14 +42,18 @@ class UnitAttackPhase(object):
                 self.persist.indicator.left()
             # TODO: Move to enemy turn
             elif event.key == pg.K_RETURN:
-                if isinstance(self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x], Enemy):
+                if isinstance(self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x], Enemy) and self.persist.highlights[self.persist.indicator.position.y][self.persist.indicator.position.x]:
                     self.persist.paired_unit.attack(
                         self.persist.screen,
                         self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x],
                         self.persist.terrain[self.persist.indicator.position.y][self.persist.indicator.position.x]
                     )
+                    self.done = True
+                    self.next_state = "Player_Phase"
                 elif self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x] == self.persist.paired_unit:
-                    print("This should end the players turn")
+                    print("This should end the units turn")
+                    self.done = True
+                    self.next_state = "Player_Phase"
 
     def update(self, dt):
         """

@@ -15,7 +15,18 @@ class PlayerPhase(State):
         self.font = pg.font.Font(None, 24)
 
     def startup(self, persistent):
+        print('Player Phase Beginning')
         self.persist = persistent
+
+        playerTurn = False
+        for player in self.persist.players:
+            if player.stats.remaining_movement > 0:
+                playerTurn = True
+
+        if not playerTurn:
+            print("Player Turn should end now")
+            self.done = True
+            self.next_state = "EnemyPhase"
 
     def get_event(self, event):
         if event.type == pg.KEYUP:
