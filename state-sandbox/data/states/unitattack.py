@@ -45,10 +45,9 @@ class UnitAttackPhase(object):
                 if isinstance(self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x], Enemy): # and self.persist.highlights[self.persist.indicator.position.y][self.persist.indicator.position.x]:
                     self.persist.paired_unit.attack(
                         self.persist,
-                        # self.persist.screen,
                         self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x],
-                        # self.persist.terrain[self.persist.indicator.position.y][self.persist.indicator.position.x]
                     )
+                    # TODO: turn this back 
                     # self.done = True
                     # self.next_state = "Player_Phase"
                 elif self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x] == self.persist.paired_unit:

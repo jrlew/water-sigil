@@ -29,65 +29,52 @@ class Unit(pg.sprite.Sprite):
         # self.rect = self.image.get_rect()
 
 
+    def update(self, persist):
+        self.idle_animation(persist)
+
+
+    ######################
+    # Movement functions #
+    ######################
+
     def up(self, units):
         self.update_prev_position()
         self.position.y -= 1
-        self.update_unit_location(units)
+        self.update_location(units)
 
 
     def down(self, units):
         self.update_prev_position()
         self.position.y += 1
-        self.update_unit_location(units)
+        self.update_location(units)
 
 
     def left(self, units):
         self.update_prev_position()
         self.position.x -= 1
-        self.update_unit_location(units)
+        self.update_location(units)
 
 
     def right(self, units):
         self.update_prev_position()
         self.position.x += 1
-        self.update_unit_location(units)
-
-
-    def display_attack_overlay(self, persist):
-        attack_overlay = AttackOverlay()
-        persist.highlights[self.position.y - 1][self.position.x] = attack_overlay
-        persist.highlights[self.position.y + 1][self.position.x] = attack_overlay
-        persist.highlights[self.position.y][self.position.x - 1] = attack_overlay
-        persist.highlights[self.position.y][self.position.x + 1] = attack_overlay
+        self.update_location(units)
 
 
     def update_prev_position(self):
         self.prev_position.y = int(self.position.y)
         self.prev_position.x = int(self.position.x)
 
-
-    def update(self, persist):
-        self.idle_animation(persist)
-
     
-    # TODO: This should probably be a tempt location
-    def update_unit_location(self, units):
+    def update_location(self, units):
         units[self.prev_position.y][self.prev_position.x] = 0
         units[self.position.y][self.position.x] = self
         self.stats.remaining_movement -= 1
 
 
-    # TODO: This probably shoudn't be here or image class property should move (it works but using property that only exist on classes that use this seems dangerous)
-    def idle_animation(self, persist):
-        if self.images.is_idle_1:
-            self.image = self.images.idle_2
-        else:
-            self.image = self.images.idle_1
-
-        self.images.is_idle_1 = not self.images.is_idle_1
-        persist.screen.render_terrain(persist.terrain[self.position.y][self.position.x], self.position.x, self.position.y)
-        persist.screen.render_unit(self)
-
+    ####################
+    # Attack Functions #
+    ####################
 
     def attack(self, persist, defending_unit):
         if self.stats.accuracy - defending_unit.stats.evasion  - persist.terrain[defending_unit.position.y][defending_unit.position.x].evasion_adjustment > randint(0, 100):
@@ -97,14 +84,44 @@ class Unit(pg.sprite.Sprite):
         else:
             persist.screen.display_context_message("Attack Missed!")
 
+    def display_attack_overlay(self, persist):
+        attack_overlay = AttackOverlay()
+        persist.highlights[self.position.y - 1][self.position.x] = attack_overlay
+        persist.highlights[self.position.y + 1][self.position.x] = attack_overlay
+        persist.highlights[self.position.y][self.position.x - 1] = attack_overlay
+        persist.highlights[self.position.y][self.position.x + 1] = attack_overlay
+
+
+    ####################################
+    # Remaing Functions (Alphabetical) #
+    ####################################
+
+    # TODO: Alter idle animations to allow more than one frame
+    def idle_animation(self, persist):
+        if self.images.is_idle_1:
+            self.image = self.images.idle_2
+        else:
+            self.image = self.images.idle_1
+
+        self.images.is_idle_1 = not self.images.is_idle_1
+        persist.screen.render_terrain(persist, self.position.x, self.position.y)
+        persist.screen.render_unit(persist, self.position.x, self.position.y)
+
     
-    # TODO: Finish figure out how to remove unit from enemys/players/all_units
     def check_for_death(self, persist):
         if self.stats.current_hp <= 0:
             print('Dead')
             persist.units[self.position.y][self.position.x] = 0
             persist.screen.render_square(persist, self.position.x, self.position.y)
+            # TODO: Look for cleaner way to do this, a conditional based on a flag on the unit should be quicker than iterating through an extra list
+            persist.enemys.remove(self)
+            persist.players.remove(self)
+            persist.all_units.remove(self)
+            
 
+##################
+# Helper Classes #
+##################
 
 class Stats():
     def __init__(self, init_stats):

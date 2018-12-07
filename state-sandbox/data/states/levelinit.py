@@ -115,8 +115,9 @@ class LevelInit(State):
         screen.init_info_pane()
         screen.init_context_menu()
         screen.init_screen(self.persist.terrain)
-        screen.render_unit(self.persist.indicator)
+        screen.render_indicator(self.persist)
+        # screen.render_unit(self.persist.indicator, self.persist.indicator.position.x, self.persist.indicator.position.y) # TODO: Indicator is a unit anymore... Maybe needs its own render functiosn
         screen.display_terrain_info(self.persist.terrain[self.persist.indicator.prev_position.y][self.persist.indicator.prev_position.x])
         for unit in self.persist.all_units.sprites():
-            screen.render_unit(unit)
+            screen.render_unit(self.persist, unit.position.x, unit.position.y)
         self.done = True

@@ -25,7 +25,7 @@ class Level():
             self.units[_enemy.position.y][_enemy.position.x] = _enemy
 
 
-    def update_unit_location(self, state, unit):
+    def update_location(self, state, unit):
         self.units[unit.prev_position.y][unit.prev_position.x] = 0
         self.units[unit.position.y][unit.position.x] = unit
         unit.stats.remaining_movement -= 1
@@ -103,7 +103,7 @@ class Level():
             state.screen.render_terrain(prev_terrain, unit.prev_position.x, unit.prev_position.y)
             state.screen.render_unit(unit)
 
-            self.update_unit_location(state, unit)
+            self.update_location(state, unit)
 
 
     def unit_to_attack(self, unit):

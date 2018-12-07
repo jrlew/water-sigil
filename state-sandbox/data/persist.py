@@ -1,18 +1,24 @@
+import pygame as pg
+from .screen import Screen
+from .indicator import Indicator
+from .player import Player
+
+
 class Persist():
     def __init__(self):
-        self.screen = None
+        self.screen: Screen
 
-        self.terrain = None
-        self.units = None
-        self.highlights = None
+        self.terrain: list
+        self.units: list
+        self.highlights: list
 
-        self.PIXEL_SIZE = None
+        self.PIXEL_SIZE: int
 
-        self.indicator = None
+        self.indicator: Indicator
 
-        self.players = None
-        self.enemys = None
-        self.all_units = None
+        self.players: pg.sprite.Group
+        self.enemys: pg.sprite.Group
+        self.all_units: pg.sprite.Group
 
-        self.paired_unit = None
+        self.paired_unit: Player
 

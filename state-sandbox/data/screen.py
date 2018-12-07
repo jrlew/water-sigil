@@ -18,6 +18,21 @@ class Screen():
         self.display = pygame.display.set_mode(size)
         self.font = pygame.font.Font(None, FONT_SIZE)
 
+
+    ##########################
+    # Screen Setup Functions #
+    ##########################
+
+    def init_screen(self, terrain):
+        y_coord = 0
+        for row in terrain:
+            x_coord = 0
+            for col in row:
+                self.display.blit(col.image, (x_coord, y_coord))
+                x_coord += PIXEL_SIZE
+            y_coord += PIXEL_SIZE
+
+
     def init_info_pane(self):
         info_pane_x_offset = 320 # TODO: no magic
         # Horizontal Bars for Unit Info
@@ -49,6 +64,10 @@ class Screen():
         pygame.draw.rect(self.display, WHITE, [475, 320, 4, 40], 0)
 
 
+    #######################
+    # Info Pane Functions #
+    #######################
+
     # TODO: Clean up formatting
     def display_unit_info(self, stats):
         info_pane_x_offset = WIDTH * PIXEL_SIZE
@@ -78,41 +97,27 @@ class Screen():
             y_offset += (FONT_SIZE + 4)
 
 
-    def display_context_message(self, msg_text):
-        pygame.draw.rect(self.display, BLACK, [8, 329, 440, 26], 0)
-        self.display.blit(self.font.render(msg_text, 1, (200, 200, 200)), (8, 329))
-
-
     def clear_info_pane(self):
         info_pane_x_offset = WIDTH * PIXEL_SIZE
         pygame.draw.rect(self.display, BLACK, [info_pane_x_offset + 4, 34, MSG_WIDTH, MSG_HEIGHT], 0)
         pygame.draw.rect(self.display, BLACK, [info_pane_x_offset + 4, 195, MSG_WIDTH, MSG_HEIGHT], 0)
 
 
-    def init_screen(self, terrain):
-        y_coord = 0
-        for row in terrain:
-            x_coord = 0
-            for col in row:
-                self.display.blit(col.image, (x_coord, y_coord))
-                x_coord += PIXEL_SIZE
-            y_coord += PIXEL_SIZE
-
-        
-    def render_unit(self, unit):
-        self.display.blit(unit.image, (unit.position.x * PIXEL_SIZE, unit.position.y * PIXEL_SIZE))
+    # TODO: Come up with a better name than context message
+    def display_context_message(self, msg_text):
+        pygame.draw.rect(self.display, BLACK, [8, 329, 440, 26], 0)
+        self.display.blit(self.font.render(msg_text, 1, (200, 200, 200)), (8, 329))
 
 
-    def render_unit_new(self, persist, x, y):
+    ####################
+    # Render Functions #
+    ####################
+
+    def render_unit(self, persist, x, y):
         self.display.blit(persist.units[y][x].image, (x * PIXEL_SIZE, y * PIXEL_SIZE))
 
 
-    # TODO: deprecate in favor of new function to standarize render(blit) calls
-    def render_terrain(self, terrain, x_coord, y_coord):
-        self.display.blit(terrain.image, (x_coord * PIXEL_SIZE, y_coord * PIXEL_SIZE))
-
-
-    def render_terrain_new(self, persist, x, y):
+    def render_terrain(self, persist, x, y):
         self.display.blit(persist.terrain[y][x].image, (x * PIXEL_SIZE, y * PIXEL_SIZE))
 
 
@@ -122,26 +127,13 @@ class Screen():
 
     def render_indicator(self, persist):
         self.display.blit(persist.indicator.image, (persist.indicator.position.x * PIXEL_SIZE, persist.indicator.position.y * PIXEL_SIZE))        
-
-
-    def move_indicator(self, state):
-        state.screen.render_terrain(state.level.terrain[state.indicator.prev_position.y][state.indicator.prev_position.x], state.indicator.prev_position.x, state.indicator.prev_position.y)
-        if not state.level.units[state.indicator.prev_position.y][state.indicator.prev_position.x] == 0:
-            state.screen.render_unit(state.level.units[state.indicator.prev_position.y][state.indicator.prev_position.x])
-
-        state.screen.render_terrain(state.level.terrain[state.indicator.position.y][state.indicator.position.x], state.indicator.position.x, state.indicator.position.y)
-        if not state.level.units[state.indicator.position.y][state.indicator.position.x] == 0:
-            state.screen.render_unit(state.level.units[state.indicator.position.y][state.indicator.position.x])
-
-        state.screen.render_unit(state.indicator)
     
 
-    # TODO: wrap calls in None checks
     def render_square(self, persist, x, y):
-        self.render_terrain_new(persist, x, y)
+        self.render_terrain(persist, x, y)
 
         if persist.units[y][x]:
-            self.render_unit_new(persist, x, y)
+            self.render_unit(persist, x, y)
 
         if persist.highlights[y][x]:
             self.render_highlight(persist, x, y)
