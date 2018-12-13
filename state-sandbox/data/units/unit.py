@@ -6,6 +6,8 @@ import pygame as pg
 from random import randint
 from ..tools import image
 from ..terrain.attackoverlay import AttackOverlay
+from ..terrain.moveoverlay import MoveOverlay
+from .. import movement
 
 class Unit(pg.sprite.Sprite):
     def __init__(self, init_pos_tuple, info):
@@ -20,14 +22,6 @@ class Unit(pg.sprite.Sprite):
         self.images = Images(info)
         self.image = self.images.image
 
-        # self.image_active = image.load_png(info["image_active_path"])
-        # self.image_inactive = image.load_png(info["image_inactive_path"])
-        # self.image = self.image_active
-        # self.is_idle_1 = True
-        # self.idle_1 = image.load_png(info["idle_1_path"])
-        # self.idle_2 = image.load_png(info["idle_2_path"])
-        # self.rect = self.image.get_rect()
-
 
     def update(self, persist):
         self.idle_animation(persist)
@@ -37,28 +31,28 @@ class Unit(pg.sprite.Sprite):
     # Movement functions #
     ######################
 
-    def up(self, units):
+    def up(self, persist):
         self.update_prev_position()
         self.position.y -= 1
-        self.update_location(units)
+        self.update_location(persist)
 
 
-    def down(self, units):
+    def down(self, persist):
         self.update_prev_position()
         self.position.y += 1
-        self.update_location(units)
+        self.update_location(persist)
 
 
-    def left(self, units):
+    def left(self, persist):
         self.update_prev_position()
         self.position.x -= 1
-        self.update_location(units)
+        self.update_location(persist)
 
 
-    def right(self, units):
+    def right(self, persist):
         self.update_prev_position()
         self.position.x += 1
-        self.update_location(units)
+        self.update_location(persist)
 
 
     def update_prev_position(self):
@@ -66,10 +60,21 @@ class Unit(pg.sprite.Sprite):
         self.prev_position.x = int(self.position.x)
 
     
-    def update_location(self, units):
-        units[self.prev_position.y][self.prev_position.x] = 0
-        units[self.position.y][self.position.x] = self
+    def update_location(self, persist):
+        persist.units[self.prev_position.y][self.prev_position.x] = 0
+        persist.units[self.position.y][self.position.x] = self
         self.stats.remaining_movement -= 1
+
+
+    # TODO: Hardcoding is bad
+    def setup_movement_highlight(self, persist):
+        valid_movements = movement.bfs((self.position.x, self.position.y), self.stats.movement, 0, 9) # TODO: fix magic numbers
+        print('Valid Movements: ', valid_movements, '\nCount: ', len(valid_movements)) 
+
+        move_overlay = MoveOverlay()
+        for mov in valid_movements:
+            persist.highlights[mov[1]][mov[0]] = move_overlay
+            persist.screen.render_square(persist, mov[0], mov[1])
 
 
     ####################
@@ -83,6 +88,7 @@ class Unit(pg.sprite.Sprite):
             defending_unit.check_for_death(persist)
         else:
             persist.screen.display_context_message("Attack Missed!")
+
 
     def display_attack_overlay(self, persist):
         attack_overlay = AttackOverlay()
