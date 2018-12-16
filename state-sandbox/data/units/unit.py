@@ -67,15 +67,22 @@ class Unit(pg.sprite.Sprite):
 
 
     # TODO: Hardcoding is bad
+    # TODO: Clean up highlights on state shift
     def setup_movement_highlight(self, persist):
-        valid_movements = movement.bfs((self.position.x, self.position.y), self.stats.movement, 0, 9) # TODO: fix magic numbers
-        print('Valid Movements: ', valid_movements, '\nCount: ', len(valid_movements)) 
+        valid_movements = movement.bfs(persist, (self.position.x, self.position.y), self.stats.movement, 0, 9) # TODO: fix magic numbers
 
         move_overlay = MoveOverlay()
         for mov in valid_movements:
             persist.highlights[mov[1]][mov[0]] = move_overlay
             persist.screen.render_square(persist, mov[0], mov[1])
 
+        # Attack overlay
+        valid_attacks = movement.bfs(persist, (self.position.x, self.position.y), self.stats.movement + self.stats.max_attack_range, 0, 9) # TODO: fix magic numbers
+        unique = set(valid_attacks) - set(valid_movements)
+        attack_overlay = AttackOverlay()
+        for mov in unique:
+            persist.highlights[mov[1]][mov[0]] = attack_overlay
+            persist.screen.render_square(persist, mov[0], mov[1])
 
     ####################
     # Attack Functions #
@@ -92,10 +99,14 @@ class Unit(pg.sprite.Sprite):
 
     def display_attack_overlay(self, persist):
         attack_overlay = AttackOverlay()
-        persist.highlights[self.position.y - 1][self.position.x] = attack_overlay
-        persist.highlights[self.position.y + 1][self.position.x] = attack_overlay
-        persist.highlights[self.position.y][self.position.x - 1] = attack_overlay
-        persist.highlights[self.position.y][self.position.x + 1] = attack_overlay
+
+        inner = movement.bfs(persist, (self.position.x, self.position.y), self.stats.min_attack_range - 1, 0, 9)
+        outer = movement.bfs(persist, (self.position.x, self.position.y), self.stats.max_attack_range, 0, 9)
+        difference = set(outer) - set(inner)
+
+        for mov in difference:
+            persist.highlights[mov[1]][mov[0]] = attack_overlay
+            persist.screen.render_square(persist, mov[0], mov[1])        
 
 
     ####################################
@@ -140,6 +151,8 @@ class Stats():
         self.evasion = init_stats["evasion"]
         self.movement = init_stats["movement"]
         self.remaining_movement = init_stats["movement"]
+        self.min_attack_range = init_stats["min_attack_range"]
+        self.max_attack_range = init_stats["max_attack_range"]
 
 
 class Position():

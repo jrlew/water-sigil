@@ -17,5 +17,7 @@ class Knight():
                 "accuracy": 110,
                 "evasion": 20,
                 "movement": 3,
+                "min_attack_range": 1,
+                "max_attack_range": 1,
             },
         }

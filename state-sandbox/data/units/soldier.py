@@ -17,5 +17,7 @@ class Soldier():
                 "accuracy": 90,
                 "evasion": 10,
                 "movement": 2,
+                "min_attack_range": 1,
+                "max_attack_range": 1,
             },
         }
