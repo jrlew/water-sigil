@@ -12,6 +12,7 @@ class UnitPhase(object):
         self.screen_rect = pg.display.get_surface().get_rect()
         self.persist = {}
         self.font = pg.font.Font(None, 24)
+        self.squares_to_cleanup = []
 
 
     def startup(self, persistent):
@@ -23,7 +24,8 @@ class UnitPhase(object):
         """
         print("Unit Phase Beginning")
         self.persist = persistent
-        self.persist.paired_unit.setup_movement_highlight(self.persist)
+        # TODO: Name this better and maybe make it a part of persist
+        self.squares_to_cleanup = self.persist.paired_unit.setup_movement_highlight(self.persist)
 
 
     # TODO: Change this to move player on 'enter' when indicator is on highlighted square
@@ -49,10 +51,14 @@ class UnitPhase(object):
             print("Change state")
             self.done = True
             self.next_state = "UnitAttackPhase"
+            # TODO: Move this into a function somewhere
+            for mov in self.squares_to_cleanup:
+                self.persist.highlights[mov[1]][mov[0]] = 0
+                self.persist.screen.render_square(self.persist, mov[0], mov[1])
 
 
     def draw(self, screen):
-        # TODO: Don't draw 
+        # TODO: Don't draw every tick.... somehow
         # Resetting old square and setting up new square
         screen.render_square(self.persist, self.persist.indicator.prev_position.x, self.persist.indicator.prev_position.y)
         screen.render_square(self.persist, self.persist.indicator.position.x, self.persist.indicator.position.y)

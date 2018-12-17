@@ -83,6 +83,8 @@ class Unit(pg.sprite.Sprite):
         for mov in unique:
             persist.highlights[mov[1]][mov[0]] = attack_overlay
             persist.screen.render_square(persist, mov[0], mov[1])
+        
+        return valid_attacks
 
     ####################
     # Attack Functions #
