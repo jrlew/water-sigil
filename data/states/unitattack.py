@@ -48,12 +48,24 @@ class UnitAttackPhase(object):
                         self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x],
                     )
                     # TODO: turn this back 
-                    # self.done = True
-                    # self.next_state = "Player_Phase"
+                    self.done = True
+                    self.next_state = "Player_Phase"
+                    # TODO: Make this function
+                    for y in range(len(self.persist.highlights)):
+                        for x in range(len(self.persist.highlights[0])):
+                            if self.persist.highlights[y][x]:
+                                self.persist.highlights[y][x] = 0
+                                self.persist.screen.render_square(self.persist, x, y)
                 elif self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x] == self.persist.paired_unit:
                     print("This should end the units turn")
                     self.done = True
                     self.next_state = "Player_Phase"
+                    # TODO: Make this function
+                    for y in range(len(self.persist.highlights)):
+                        for x in range(len(self.persist.highlights[0])):
+                            if self.persist.highlights[y][x]:
+                                self.persist.highlights[y][x] = 0
+                                self.persist.screen.render_square(self.persist, x, y)
 
     def update(self, dt):
         """

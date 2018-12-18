@@ -40,7 +40,6 @@ class Level1(object):
                 self.quit = True
                 sys.exit()
             elif event.type == self.custom_events.UPDATE_ANIMATION:
-                # self.update_animation_handler(state)
                 self.state.persist.all_units.update(self.state.persist)
             else:
                 self.state.get_event(event)
