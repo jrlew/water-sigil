@@ -1,2 +1,2 @@
 default:
-	python3 water-sigil.py
+	python3 main.py
