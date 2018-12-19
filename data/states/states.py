@@ -6,9 +6,9 @@ from .enemyphase import EnemyPhase
 
 
 states = {
-    "Level_Init": LevelInit(),
-    "Player_Phase": PlayerPhase(),
-    "UnitPhase": UnitPhase(),
-    "UnitAttackPhase": UnitAttackPhase(),
-    "EnemyPhase": EnemyPhase(),
+    "Level_Init": LevelInit,
+    "Player_Phase": PlayerPhase,
+    "UnitPhase": UnitPhase,
+    "UnitAttackPhase": UnitAttackPhase,
+    "EnemyPhase": EnemyPhase,
 }

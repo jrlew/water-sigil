@@ -28,7 +28,7 @@ class Level1(object):
         self.fps = 60
         self.states = states
         self.state_name = start_state
-        self.state = self.states[self.state_name]
+        self.state = self.states[self.state_name]()
         self.custom_events = CustomEvents() # TODO: determine if this should go in persist
         # self.persist.screen = self.screen
 
@@ -52,7 +52,7 @@ class Level1(object):
         self.state_name = next_state
         persistent = self.state.persist
         persistent.screen = self.screen # TODO: Orgaization of persist needs to be better. This shouldn't need to be assigned on each state change
-        self.state = self.states[self.state_name]
+        self.state = self.states[self.state_name]()
         self.state.startup(persistent)
 
     def update(self, dt):

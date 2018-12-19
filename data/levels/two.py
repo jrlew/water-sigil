@@ -15,9 +15,7 @@ from ..terrain.mountaintopleftgrass import MountTopLeftGrass
 from ..terrain.forest import Forest
 from ..terrain.fortress import Fortress
 
-from ..units.knight import Knight
-from ..units.soldier import Soldier
-from ..units.archer import Archer
+from ..units.units import Units
 
 from ..enemy import Enemy
 from ..player import Player
@@ -50,11 +48,11 @@ level_params = {
         [MOUNT, MOUNTGRASS, MOUNTGRASS, MOUNTGRASS, MOUNT, MOUNT, MOUNT, MOUNT, MOUNT, MOUNT],
     ],
     "players": pg.sprite.Group([
-        Player((2, 2), Knight("blue")),
-        Player((3, 3), Archer("blue"))
+        Player((2, 2), Units.knight("blue")),
+        Player((3, 3), Units.archer("blue"))
     ]),
     "enemys": pg.sprite.Group([
-        Enemy((3, 6), Soldier("red")),
-        Enemy((2, 7), Knight("red")),
+        Enemy((3, 6), Units.soldier("red")),
+        Enemy((2, 7), Units.knight("red")),
     ]),
 }
