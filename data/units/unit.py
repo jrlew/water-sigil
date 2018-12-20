@@ -21,10 +21,12 @@ class Unit(pg.sprite.Sprite):
         # TODO: Clean up the clean up attempt
         self.images = Images(info)
         self.image = self.images.image
+        self.active = False
 
 
     def update(self, persist):
-        self.idle_animation(persist)
+        if self.active:
+            self.idle_animation(persist)
 
 
     ######################

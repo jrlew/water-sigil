@@ -50,6 +50,8 @@ class UnitAttackPhase(object):
                     # TODO: turn this back 
                     self.done = True
                     self.next_state = "Player_Phase"
+                    self.persist.paired_unit.stats.remaining_movement = 0 # Temp remove after movement change
+                    self.persist.paired_unit.active = False
                     # TODO: Make this function
                     for y in range(len(self.persist.highlights)):
                         for x in range(len(self.persist.highlights[0])):
@@ -60,6 +62,8 @@ class UnitAttackPhase(object):
                     print("This should end the units turn")
                     self.done = True
                     self.next_state = "Player_Phase"
+                    self.persist.paired_unit.stats.remaining_movement = 0 # Temp remove after movement change
+                    self.persist.paired_unit.active = False
                     # TODO: Make this function
                     for y in range(len(self.persist.highlights)):
                         for x in range(len(self.persist.highlights[0])):

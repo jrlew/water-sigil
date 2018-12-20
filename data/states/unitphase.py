@@ -43,6 +43,13 @@ class UnitPhase(object):
             elif event.key == pg.K_LEFT:
                 self.persist.indicator.left()
                 self.persist.paired_unit.left(self.persist)
+            elif event.key == pg.K_RETURN:
+                print("Change state")
+                self.done = True
+                self.next_state = "UnitAttackPhase"
+                for mov in self.squares_to_cleanup:
+                    self.persist.highlights[mov[1]][mov[0]] = 0
+                    self.persist.screen.render_square(self.persist, mov[0], mov[1])
 
 
     def update(self, dt):

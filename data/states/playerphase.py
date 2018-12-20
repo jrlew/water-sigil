@@ -18,6 +18,14 @@ class PlayerPhase(State):
         print('Player Phase Beginning')
         self.persist = persistent
 
+        for unit in self.persist.players:
+            if unit.stats.remaining_movement:
+                unit.active = True
+            else:
+                unit.active = False
+        for unit in self.persist.enemys:
+            unit.active = False
+
         playerTurn = False
         for player in self.persist.players:
             if player.stats.remaining_movement > 0:

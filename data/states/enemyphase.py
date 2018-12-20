@@ -24,6 +24,12 @@ class EnemyPhase(State):
         persistent: a dict passed from state to state
         """
         self.persist = persistent
+
+        for unit in self.persist.players:
+            unit.active = False
+        for unit in self.persist.enemys:
+            unit.active = True
+
         print("Enemy Phase Begins, if it existed yet...\n >>> Sys Exist")
         sys.exit()
 
