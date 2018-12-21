@@ -68,6 +68,13 @@ class Unit(pg.sprite.Sprite):
         self.stats.remaining_movement -= 1
 
 
+    def move_to_position(self, persist, new_pos):
+        self.update_prev_position()
+        self.position.y = int(new_pos.y)
+        self.position.x = int(new_pos.x)
+        self.update_location(persist)
+        
+
     # TODO: Hardcoding is bad
     # TODO: Clean up highlights on state shift
     def setup_movement_highlight(self, persist):
@@ -154,7 +161,7 @@ class Stats():
         self.accuracy = init_stats["accuracy"]
         self.evasion = init_stats["evasion"]
         self.movement = init_stats["movement"]
-        self.remaining_movement = init_stats["movement"]
+        self.remaining_movement = init_stats["movement"] # TODO: Obsolete remove
         self.min_attack_range = init_stats["min_attack_range"]
         self.max_attack_range = init_stats["max_attack_range"]
 

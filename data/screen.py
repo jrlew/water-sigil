@@ -64,6 +64,12 @@ class Screen():
         pygame.draw.rect(self.display, WHITE, [475, 320, 4, 40], 0)
 
 
+    def init_all(self, persist):
+        self.init_screen(persist.terrain)
+        self.init_info_pane()
+        self.init_context_menu()
+
+
     #######################
     # Info Pane Functions #
     #######################

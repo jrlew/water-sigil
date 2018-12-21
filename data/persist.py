@@ -12,13 +12,15 @@ class Persist():
         self.units: list
         self.highlights: list
 
-        self.PIXEL_SIZE: int
+        self.current_highlights: list
 
         self.indicator: Indicator
 
         self.players: pg.sprite.Group
         self.enemys: pg.sprite.Group
         self.all_units: pg.sprite.Group
+
+
 
         self.paired_unit: Player
 

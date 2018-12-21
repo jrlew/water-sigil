@@ -30,7 +30,7 @@ class EnemyPhase(State):
         for unit in self.persist.enemys:
             unit.active = True
 
-        print("Enemy Phase Begins, if it existed yet...\n >>> Sys Exist")
+        print("Enemy Phase Begins, if it existed yet...\n >>> Sys Exist\n\n")
         sys.exit()
 
     def get_event(self, event):

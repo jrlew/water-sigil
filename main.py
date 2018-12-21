@@ -4,18 +4,8 @@ import pygame as pg
 from data.game import Game
 from data.screen import Screen
 
-# TODO: Remove these
-from data.levelone import Level1
-from data.leveltwo import Level2
-
 pg.init()
 screen = Screen()
-
-# TODO: Point these to the real levels one and two
-levels = {
-    "Level1": Level1,
-    "Level2": Level2,
-}
 
 screen.display_context_message("> Level One     Level Two")
 pg.display.update()
@@ -42,11 +32,11 @@ if indicator_state:
 else:
     print('Selecting Level Two')
 
-
 from data.states.states import states
 
-#TODO: replace levelone.py with game.py that accepts a level file as paramter
-game = levels["Level1"](screen, states, "Level_Init")
+# TODO: Change 3rd Game.__init__() param to be name of chosen level
+# Should levelinit.py even be a thing?
+game = Game(screen, states, "Level_Init")
 game.run()
 pg.quit()
 sys.exit()

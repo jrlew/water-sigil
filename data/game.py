@@ -1,6 +1,7 @@
+import sys
 import pygame as pg
-from .screen import Screen
 
+from .customevents import CustomEvents
 
 class Game(object):
     """
@@ -20,18 +21,26 @@ class Game(object):
         states: a dict mapping state-names to GameState objects
         start_state: name of the first active game state 
         """
+        print('Is Game used?')
         self.done = False
         self.screen = screen
         self.clock = pg.time.Clock()
         self.fps = 60
         self.states = states
         self.state_name = start_state
-        self.state = self.states[self.state_name]
+        self.state = self.states[self.state_name]()
+        self.custom_events = CustomEvents() # TODO: determine if this should go in persist
 
     def event_loop(self):
         """Events are passed for handling to the current state."""
         for event in pg.event.get():
-            self.state.get_event(event)
+            if event.type == pg.QUIT:
+                self.quit = True
+                sys.exit()
+            elif event.type == self.custom_events.UPDATE_ANIMATION:
+                self.state.persist.all_units.update(self.state.persist)
+            else:
+                self.state.get_event(event)
 
     def flip_state(self):
         """Switch to the next game state."""
@@ -40,7 +49,8 @@ class Game(object):
         self.state.done = False
         self.state_name = next_state
         persistent = self.state.persist
-        self.state = self.states[self.state_name]
+        persistent.screen = self.screen # TODO: Orgaization of persist needs to be better. This shouldn't need to be assigned on each state change
+        self.state = self.states[self.state_name]()
         self.state.startup(persistent)
 
     def update(self, dt):
@@ -64,7 +74,7 @@ class Game(object):
         Pretty much the entirety of the game's runtime will be
         spent inside this while loop.
         """
-
+        pg.time.set_timer(self.custom_events.UPDATE_ANIMATION, 650)
 
         while not self.done:
             dt = self.clock.tick(self.fps)

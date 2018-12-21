@@ -42,7 +42,7 @@ class UnitAttackPhase(object):
                 self.persist.indicator.left()
             # TODO: Move to enemy turn
             elif event.key == pg.K_RETURN:
-                if isinstance(self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x], Enemy): # and self.persist.highlights[self.persist.indicator.position.y][self.persist.indicator.position.x]:
+                if isinstance(self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x], Enemy) and self.persist.highlights[self.persist.indicator.position.y][self.persist.indicator.position.x]:
                     self.persist.paired_unit.attack(
                         self.persist,
                         self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x],
