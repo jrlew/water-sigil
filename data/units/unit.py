@@ -174,8 +174,6 @@ class Position():
 
 class Images():
     def __init__(self, info):
-        # self.image_active = image.load_png(info["image_active_path"])
-        # self.image_inactive = image.load_png(info["image_inactive_path"])
         self.is_idle_1 = True
         self.idle_1 = image.load_png(info["idle_1_path"])
         self.idle_2 = image.load_png(info["idle_2_path"])

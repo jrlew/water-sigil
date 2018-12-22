@@ -3,7 +3,7 @@ class Node():
         self.terrain_map = terrain_map
         self.parent = parent
         self.position = pos
-        self.remaining_movement = mov  # - 1 # Initial call needs movement + start terrain mod to offset value
+        self.remaining_movement = mov
         self.children = self.get_children(terrain_map)
         
 
@@ -50,7 +50,6 @@ def bfs(persist, start, movement, min, max):
     while True:
         current_node = current_depth.pop(0)
 
-        # for node in current_node.get_children(persist.terrain_map):
         for node in current_node.children:
             if valid_node(node, closed_set, min, max):
                 next_depth.append(node)
@@ -62,5 +61,5 @@ def bfs(persist, start, movement, min, max):
             else:
                 current_depth = next_depth
                 next_depth = []
-
+    
     return closed_set

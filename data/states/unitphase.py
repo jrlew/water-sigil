@@ -41,12 +41,18 @@ class UnitPhase(object):
             elif event.key == pg.K_LEFT:
                 self.persist.indicator.left()
             elif event.key == pg.K_RETURN:
-                if isinstance(self.persist.highlights[self.persist.indicator.position.y][self.persist.indicator.position.x], MoveOverlay):
+                if isinstance(self.persist.highlights[self.persist.indicator.position.y][self.persist.indicator.position.x], MoveOverlay) and not self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x]:
                     print("Change state")
                     self.done = True
                     self.next_state = "UnitAttackPhase"
                     self.persist.paired_unit.move_to_position(self.persist, self.persist.indicator.position)
-
+                    for mov in self.persist.current_highlights:
+                        self.persist.highlights[mov[1]][mov[0]] = 0
+                        self.persist.screen.render_square(self.persist, mov[0], mov[1])
+                elif self.persist.paired_unit.position.x == self.persist.indicator.position.x and self.persist.paired_unit.position.y == self.persist.indicator.position.y:
+                    print("Ending Turn No Movement")
+                    self.done = True
+                    self.next_state = "UnitAttackPhase"
                     for mov in self.persist.current_highlights:
                         self.persist.highlights[mov[1]][mov[0]] = 0
                         self.persist.screen.render_square(self.persist, mov[0], mov[1])

@@ -50,10 +50,10 @@ level_params = {
     "players": pg.sprite.Group([
         # Player((2, 2), Units.knight("blue")),
         # Player((3, 3), Units.archer("blue")),
-        Player((1, 4), Units.warden("blue")),
+        Player((3, 3), Units.warden("blue")),
     ]),
     "enemys": pg.sprite.Group([
-        Enemy((3, 6), Units.soldier("red")),
-        Enemy((2, 7), Units.warden("red")),
+        Enemy((6, 3), Units.soldier("red")),
+        Enemy((0, 3), Units.warden("red")),
     ]),
 }
