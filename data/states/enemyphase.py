@@ -30,6 +30,11 @@ class EnemyPhase(State):
         for unit in self.persist.enemys:
             unit.active = True
 
+        print("Should output stuff next")
+
+        for unit in self.persist.enemys:
+            unit.move_towards_player(self.persist)
+
         print("Enemy Phase Begins, if it existed yet...\n >>> Sys Exist\n\n")
         sys.exit()
 

@@ -56,7 +56,6 @@ class Game(object):
     def update(self, dt):
         """
         Check for state flip and update active state.
-
         dt: milliseconds since last frame
         """
         if self.state.quit:

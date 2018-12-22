@@ -20,7 +20,5 @@ class Persist():
         self.enemys: pg.sprite.Group
         self.all_units: pg.sprite.Group
 
-
-
         self.paired_unit: Player
 

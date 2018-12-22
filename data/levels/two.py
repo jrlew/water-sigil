@@ -48,9 +48,9 @@ level_params = {
         [MOUNT, MOUNTGRASS, MOUNTGRASS, MOUNTGRASS, MOUNT, MOUNT, MOUNT, MOUNT, MOUNT, MOUNT],
     ],
     "players": pg.sprite.Group([
-        Player((2, 2), Units.knight("blue")),
+        # Player((2, 2), Units.knight("blue")),
         # Player((3, 3), Units.archer("blue")),
-        # Player((1, 4), Units.warden("blue")),
+        Player((1, 4), Units.warden("blue")),
     ]),
     "enemys": pg.sprite.Group([
         Enemy((3, 6), Units.soldier("red")),

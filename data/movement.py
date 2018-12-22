@@ -11,17 +11,21 @@ class Node():
     def get_children(self, terrain_map):
         if self.remaining_movement:
             arr = []
-            if (self.remaining_movement - self.terrain_map[self.position[1]][self.position[0] - 1].movement_cost):
-                arr.append(Node(self, (self.position[0] - 1, self.position[1]), self.remaining_movement - self.terrain_map[self.position[1]][self.position[0] - 1].movement_cost, terrain_map))
+            if not self.position[0] - 1 < 0:
+                if (self.remaining_movement - self.terrain_map[self.position[1]][self.position[0] - 1].movement_cost):
+                    arr.append(Node(self, (self.position[0] - 1, self.position[1]), self.remaining_movement - self.terrain_map[self.position[1]][self.position[0] - 1].movement_cost, terrain_map))
 
-            if (self.remaining_movement - self.terrain_map[self.position[1]][self.position[0] + 1].movement_cost):
-                arr.append(Node(self, (self.position[0] + 1, self.position[1]), self.remaining_movement - self.terrain_map[self.position[1]][self.position[0] + 1].movement_cost, terrain_map))
+            if not self.position[0] + 1 > 9:
+                if (self.remaining_movement - self.terrain_map[self.position[1]][self.position[0] + 1].movement_cost):
+                    arr.append(Node(self, (self.position[0] + 1, self.position[1]), self.remaining_movement - self.terrain_map[self.position[1]][self.position[0] + 1].movement_cost, terrain_map))
 
-            if (self.remaining_movement - self.terrain_map[self.position[1] - 1][self.position[0]].movement_cost):
-                arr.append(Node(self, (self.position[0], self.position[1] - 1), self.remaining_movement - self.terrain_map[self.position[1] - 1 ][self.position[0]].movement_cost, terrain_map))
+            if not self.position[1] - 1 < 0 :
+                if (self.remaining_movement - self.terrain_map[self.position[1] - 1][self.position[0]].movement_cost):
+                    arr.append(Node(self, (self.position[0], self.position[1] - 1), self.remaining_movement - self.terrain_map[self.position[1] - 1 ][self.position[0]].movement_cost, terrain_map))
 
-            if (self.remaining_movement - self.terrain_map[self.position[1] + 1][self.position[0]].movement_cost):
-                arr.append(Node(self, (self.position[0], self.position[1] + 1), self.remaining_movement - self.terrain_map[self.position[1] + 1][self.position[0]].movement_cost, terrain_map))
+            if not self.position[1] + 1 > 9:
+                if (self.remaining_movement - self.terrain_map[self.position[1] + 1][self.position[0]].movement_cost):
+                    arr.append(Node(self, (self.position[0], self.position[1] + 1), self.remaining_movement - self.terrain_map[self.position[1] + 1][self.position[0]].movement_cost, terrain_map))
             return arr
         else:
             return []
