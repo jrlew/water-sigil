@@ -23,6 +23,7 @@ from ..enemy import Enemy
 
 from ..units.soldier import Soldier
 from ..units.knight import Knight
+from ..units.warden import Warden
 
 
 class Intro(Level):
@@ -43,7 +44,7 @@ class Intro(Level):
 
         players = [
             # Player((1, 4), Soldier("blue")),
-            Player((3, 4), Knight("blue")),
+            Player((3, 4), Warden("blue")),
             # Player((3, 3), Soldier("blue")),
         ]
 
