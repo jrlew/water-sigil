@@ -5,21 +5,22 @@ Uses Python 3
 
 pip install pygame
 
-Run with 'python water-sigil.py'
+Run with 'python main.py'
 
 ## TODOs ##
-* Expand enemy movement bahaviors
+* Clean up terrain files
+    * Add movement cost
+    * Move versions (different images) of same terrain type into one file 
+* Add level select
+* Add more levels
+* Create enemy movement bahaviors
     * Seek and Destroy nearest player controlled character
     * Stationary but attack an adjacent player controlled character
     * Attack weakest reachable player controlled player
 * Setup trigger system to change Enemy Units movement bahavior based on player choices (stationary until a player unit moves past (x, y) )
 * End Unit turn after attacking for player and enemy controlled characters
-* Modify turn state flags to prevent player from moving until enemy turn is done taking place
 * Create determine_turn function (name pending) for Enemy Unit that chooses movement behavior based on Unit characteristics
-* Modify enemy_movement_queue to accept Enemy instances instead of being populated with parameters for a move function
-* Add level select menu
-* Winning level kicks back to menu
-* Add more levels
+* Winning (all enemies defeated) a level kicks back to menu
 * Add save system to gate levels until completing the prior level
 
 ### Systems ###
