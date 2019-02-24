@@ -1,5 +1,6 @@
 import pygame as pg
 from ..enemy import Enemy
+from ..units import units
 class UnitAttackPhase(object):
     """
     Parent class for individual game states to inherit from. 
@@ -25,10 +26,7 @@ class UnitAttackPhase(object):
         self.persist.paired_unit.display_attack_overlay(self.persist)
         # Loop through highlighted squares to init the attack overlay
         # TODO: Look into setting up array of highlighted squares instead of looping through 2d array
-        for y in range(len(self.persist.highlights)):
-            for x in range(len(self.persist.highlights[0])):
-                if self.persist.highlights[y][x]:
-                    self.persist.screen.display.blit(self.persist.highlights[y][x].image, (x  * 32, y * 32))
+        self.persist.paired_unit.cleanup_movement_highlights(self.persist)
 
     def get_event(self, event):
         if event.type == pg.KEYUP:
@@ -41,6 +39,11 @@ class UnitAttackPhase(object):
             elif event.key == pg.K_LEFT:
                 self.persist.indicator.left()
             # TODO: Move to enemy turn
+            elif event.key == pg.K_ESCAPE:
+                self.done = True
+                self.next_state = "UnitPhase"
+                self.persist.paired_unit.cleanup_attack_highlights()
+
             elif event.key == pg.K_RETURN:
                 if isinstance(self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x], Enemy) and self.persist.highlights[self.persist.indicator.position.y][self.persist.indicator.position.x]:
                     self.persist.paired_unit.attack(
@@ -53,11 +56,8 @@ class UnitAttackPhase(object):
                     self.persist.paired_unit.stats.remaining_movement = 0 # Temp remove after movement change
                     self.persist.paired_unit.active = False
                     # TODO: Make this function
-                    for y in range(len(self.persist.highlights)):
-                        for x in range(len(self.persist.highlights[0])):
-                            if self.persist.highlights[y][x]:
-                                self.persist.highlights[y][x] = 0
-                                self.persist.screen.render_square(self.persist, x, y)
+                    self.persist.paired_unit.cleanup_attack_highlights()
+
                 elif self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x] == self.persist.paired_unit:
                     print("This should end the units turn")
                     self.done = True
@@ -65,11 +65,7 @@ class UnitAttackPhase(object):
                     self.persist.paired_unit.stats.remaining_movement = 0 # Temp remove after movement change
                     self.persist.paired_unit.active = False
                     # TODO: Make this function
-                    for y in range(len(self.persist.highlights)):
-                        for x in range(len(self.persist.highlights[0])):
-                            if self.persist.highlights[y][x]:
-                                self.persist.highlights[y][x] = 0
-                                self.persist.screen.render_square(self.persist, x, y)
+                    self.persist.paired_unit.cleanup_attack_highlights()
 
     def update(self, dt):
         """

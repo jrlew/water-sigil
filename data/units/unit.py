@@ -95,6 +95,21 @@ class Unit(pg.sprite.Sprite):
         
         return valid_attacks
 
+    def cleanup_movement_highlights(self, persist):
+        for y in range(len(persist.highlights)):
+            for x in range(len(persist.highlights[0])):
+                if persist.highlights[y][x]:
+                    print("howdy")
+                    persist.screen.display.blit(persist.highlights[y][x].image, (x  * 32, y * 32))
+
+    def cleanup_attak_highlights(self, persist):
+        for y in range(len(persist.highlights)):
+            for x in range(len(persist.highlights[0])):
+                if persist.highlights[y][x]:
+                    persist.highlights[y][x] = 0
+                    persist.screen.render_square(persist, x, y)
+
+
     ####################
     # Attack Functions #
     ####################

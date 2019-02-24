@@ -58,6 +58,16 @@ class UnitPhase(object):
                         self.persist.screen.render_square(self.persist, mov[0], mov[1])
                 else:
                     self.persist.screen.display_context_message("Unable To Move Units To Selected Tile")
+            elif event.key == pg.K_ESCAPE:
+                print("backout completed")
+                for mov in self.persist.current_highlights:
+                        self.persist.highlights[mov[1]][mov[0]] = 0
+                        self.persist.screen.render_square(self.persist, mov[0], mov[1])
+                self.persist.paired_unit.cleanup_movement_highlights(self.persist)
+                self.done = True
+                self.next_state = "Player_Phase"
+                
+                
 
 
     def update(self, dt):
