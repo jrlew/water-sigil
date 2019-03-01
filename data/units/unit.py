@@ -102,7 +102,7 @@ class Unit(pg.sprite.Sprite):
                     print("howdy")
                     persist.screen.display.blit(persist.highlights[y][x].image, (x  * 32, y * 32))
 
-    def cleanup_attak_highlights(self, persist):
+    def cleanup_attack_highlights(self, persist):
         for y in range(len(persist.highlights)):
             for x in range(len(persist.highlights[0])):
                 if persist.highlights[y][x]:

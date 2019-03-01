@@ -42,7 +42,7 @@ class UnitAttackPhase(object):
             elif event.key == pg.K_ESCAPE:
                 self.done = True
                 self.next_state = "UnitPhase"
-                self.persist.paired_unit.cleanup_attack_highlights()
+                self.persist.paired_unit.cleanup_attack_highlights(self.persist)
 
             elif event.key == pg.K_RETURN:
                 if isinstance(self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x], Enemy) and self.persist.highlights[self.persist.indicator.position.y][self.persist.indicator.position.x]:
