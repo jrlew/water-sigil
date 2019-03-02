@@ -7,6 +7,7 @@ from .units.unit import Unit, Position
 from .movement import bfs
 from .player import Player
 
+
 class Enemy(Unit):
     def __init__(self, init_pos, job):
         Unit.__init__(self, init_pos, job.info)

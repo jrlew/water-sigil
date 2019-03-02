@@ -8,6 +8,7 @@ from ..tools import image
 from ..terrain.attackoverlay import AttackOverlay
 from ..terrain.moveoverlay import MoveOverlay
 from .. import movement
+from ..store import Store
 
 class Unit(pg.sprite.Sprite):
     def __init__(self, init_pos_tuple, info):
@@ -22,6 +23,7 @@ class Unit(pg.sprite.Sprite):
         self.images = Images(info)
         self.image = self.images.image
         self.active = False
+        self.store = Store.instance()
 
 
     def update(self, persist):

@@ -3,6 +3,7 @@ Placeholder
 """
 
 import pygame
+from .store import Store
 
 size = width, height = 480, 360
 FONT_SIZE = 24
@@ -17,6 +18,7 @@ class Screen():
     def __init__(self):
         self.display = pygame.display.set_mode(size)
         self.font = pygame.font.Font(None, FONT_SIZE)
+        self.store = Store.instance()
 
 
     ##########################

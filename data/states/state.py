@@ -1,4 +1,5 @@
 import pygame as pg
+from ..store import Store
 
 class State(object):
     """
@@ -12,6 +13,7 @@ class State(object):
         self.screen_rect = pg.display.get_surface().get_rect()
         self.persist = {}
         self.font = pg.font.Font(None, 24)
+        self.store = Store.instance()
 
     def startup(self, persistent):
         """
