@@ -1,6 +1,8 @@
 import pygame as pg
 from ..enemy import Enemy
 from ..units import units
+from ..units.unit import Position
+
 class UnitAttackPhase(object):
     """
     Parent class for individual game states to inherit from. 
@@ -40,6 +42,9 @@ class UnitAttackPhase(object):
                 self.persist.indicator.left()
             # TODO: Move to enemy turn
             elif event.key == pg.K_ESCAPE:
+                pre_pos = [self.persist.paired_unit.update_pre_pos(self.persist, 'x'), self.persist.paired_unit.update_pre_pos(self.persist, 'y')]
+                Position(pre_pos)
+                self.persist.paired_unit.move_to_position(self.persist, pre_pos)
                 self.done = True
                 self.next_state = "UnitPhase"
                 self.persist.paired_unit.cleanup_attack_highlights(self.persist)
@@ -65,7 +70,7 @@ class UnitAttackPhase(object):
                     self.persist.paired_unit.stats.remaining_movement = 0 # Temp remove after movement change
                     self.persist.paired_unit.active = False
                     # TODO: Make this function
-                    self.persist.paired_unit.cleanup_attack_highlights()
+                    self.persist.paired_unit.cleanup_attack_highlights(self.persist)
 
     def update(self, dt):
         """

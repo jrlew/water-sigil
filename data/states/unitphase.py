@@ -31,9 +31,11 @@ class UnitPhase(object):
 
     # TODO: Change this to move player on 'enter' when indicator is on highlighted square
     def get_event(self, event):
+        pre_pos_x = self.persist.paired_unit.update_pre_pos(self.persist, 'x')
+        pre_pos_y = self.persist.paired_unit.update_pre_pos(self.persist, 'y')
         if event.type == pg.KEYUP:
             if event.key == pg.K_UP:
-                self.persist.indicator.up()
+                self.persist.indicator.up() 
             elif event.key == pg.K_DOWN:
                 self.persist.indicator.down()
             elif event.key == pg.K_RIGHT:

@@ -109,6 +109,19 @@ class Unit(pg.sprite.Sprite):
                     persist.highlights[y][x] = 0
                     persist.screen.render_square(persist, x, y)
 
+    def update_pre_pos(self, persist, val):
+        print('testing prepos')
+        if val == 'x':
+            pre_pos = persist.paired_unit.position.x
+            print(val, pre_pos)
+            return pre_pos
+        elif val == 'y':
+            pre_pos = persist.paired_unit.position.y
+            print(val, pre_pos)
+            return pre_pos
+        
+        
+
 
     ####################
     # Attack Functions #
