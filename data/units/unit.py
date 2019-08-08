@@ -26,37 +26,37 @@ class Unit(pg.sprite.Sprite):
         self.store = Store.instance()
 
 
-    def update(self, persist):
+    def update(self):
         if self.active:
-            self.idle_animation(persist)
+            self.idle_animation()
 
 
     ######################
     # Movement functions #
     ######################
 
-    def up(self, persist):
+    def up(self):
         self.update_prev_position()
         self.position.y -= 1
-        self.update_location(persist)
+        self.update_location()
 
 
-    def down(self, persist):
+    def down(self):
         self.update_prev_position()
         self.position.y += 1
-        self.update_location(persist)
+        self.update_location()
 
 
-    def left(self, persist):
+    def left(self):
         self.update_prev_position()
         self.position.x -= 1
-        self.update_location(persist)
+        self.update_location()
 
 
-    def right(self, persist):
+    def right(self):
         self.update_prev_position()
         self.position.x += 1
-        self.update_location(persist)
+        self.update_location()
 
 
     def update_prev_position(self):
@@ -64,61 +64,63 @@ class Unit(pg.sprite.Sprite):
         self.prev_position.x = int(self.position.x)
 
     
-    def update_location(self, persist):
-        persist.units[self.prev_position.y][self.prev_position.x] = 0
-        persist.units[self.position.y][self.position.x] = self
+    def update_location(self):
+        self.store.units[self.prev_position.y][self.prev_position.x] = 0
+        self.store.units[self.position.y][self.position.x] = self
         self.stats.remaining_movement -= 1
 
 
-    def move_to_position(self, persist, new_pos):
+    def move_to_position(self, new_pos):
         self.update_prev_position()
         self.position.y = int(new_pos.y)
         self.position.x = int(new_pos.x)
-        self.update_location(persist)
+        self.update_location()
         
 
     # TODO: Hardcoding is bad
     # TODO: Clean up highlights on state shift
-    def setup_movement_highlight(self, persist):
-        valid_movements = movement.bfs(persist, (self.position.x, self.position.y), self.stats.movement, 0, 9) # TODO: fix magic numbers
+    def setup_movement_highlight(self):
+        valid_movements = movement.bfs((self.position.x, self.position.y), self.stats.movement, 0, 9) # TODO: fix magic numbers
+        print('valid movement', valid_movements)
 
         move_overlay = MoveOverlay()
         for mov in valid_movements:
-            persist.highlights[mov[1]][mov[0]] = move_overlay
-            persist.screen.render_square(persist, mov[0], mov[1])
+            self.store.highlights[mov[1]][mov[0]] = move_overlay
+            self.store.screen.render_square(mov[0], mov[1])
 
         # Attack overlay
-        valid_attacks = movement.bfs(persist, (self.position.x, self.position.y), self.stats.movement + self.stats.max_attack_range, 0, 9) # TODO: fix magic numbers
+        valid_attacks = movement.bfs((self.position.x, self.position.y), self.stats.movement + self.stats.max_attack_range, 0, 9) # TODO: fix magic numbers
+        print('valid attacks', valid_attacks)
         unique = set(valid_attacks) - set(valid_movements)
         attack_overlay = AttackOverlay()
         for mov in unique:
-            persist.highlights[mov[1]][mov[0]] = attack_overlay
-            persist.screen.render_square(persist, mov[0], mov[1])
+            self.store.highlights[mov[1]][mov[0]] = attack_overlay
+            self.store.screen.render_square(mov[0], mov[1])
         
         return valid_attacks
 
-    def cleanup_movement_highlights(self, persist):
-        for y in range(len(persist.highlights)):
-            for x in range(len(persist.highlights[0])):
-                if persist.highlights[y][x]:
-                    print("howdy")
-                    persist.screen.display.blit(persist.highlights[y][x].image, (x  * 32, y * 32))
+    def cleanup_movement_highlights(self):
+        for y in range(len(self.store.highlights)):
+            for x in range(len(self.store.highlights[0])):
+                if self.store.highlights[y][x]:
+                    print("howdy"+"doodee")
+                    self.store.screen.display.blit(self.store.highlights[y][x].image, (x  * 32, y * 32))
 
-    def cleanup_attack_highlights(self, persist):
-        for y in range(len(persist.highlights)):
-            for x in range(len(persist.highlights[0])):
-                if persist.highlights[y][x]:
-                    persist.highlights[y][x] = 0
-                    persist.screen.render_square(persist, x, y)
+    def cleanup_attack_highlights(self):
+        for y in range(len(self.store.highlights)):
+            for x in range(len(self.store.highlights[0])):
+                if self.store.highlights[y][x]:
+                    self.store.highlights[y][x] = 0
+                    self.store.screen.render_square(x, y)
 
-    def update_pre_pos(self, persist, val):
+    def update_pre_pos(self, val):
         print('testing prepos')
         if val == 'x':
-            pre_pos = persist.paired_unit.position.x
+            pre_pos = self.store.paired_unit.position.x
             print(val, pre_pos)
             return pre_pos
         elif val == 'y':
-            pre_pos = persist.paired_unit.position.y
+            pre_pos = self.store.paired_unit.position.y
             print(val, pre_pos)
             return pre_pos
         
@@ -129,25 +131,25 @@ class Unit(pg.sprite.Sprite):
     # Attack Functions #
     ####################
 
-    def attack(self, persist, defending_unit):
-        if self.stats.accuracy - defending_unit.stats.evasion  - persist.terrain[defending_unit.position.y][defending_unit.position.x].evasion_adjustment > randint(0, 100):
-            defending_unit.stats.current_hp -= self.stats.strength - defending_unit.stats.defense - persist.terrain[defending_unit.position.y][defending_unit.position.x].def_adjustment
-            persist.screen.display_context_message("Hit Enemy. Remaining HP: {hp}".format(hp=defending_unit.stats.current_hp))
-            defending_unit.check_for_death(persist)
+    def attack(self, defending_unit):
+        if self.stats.accuracy - defending_unit.stats.evasion  - self.store.terrain[defending_unit.position.y][defending_unit.position.x].evasion_adjustment > randint(0, 100):
+            defending_unit.stats.current_hp -= self.stats.strength - defending_unit.stats.defense - self.store.terrain[defending_unit.position.y][defending_unit.position.x].def_adjustment
+            self.store.screen.display_context_message("Hit Enemy. Remaining HP: {hp}".format(hp=defending_unit.stats.current_hp))
+            defending_unit.check_for_death()
         else:
-            persist.screen.display_context_message("Attack Missed!")
+            self.store.screen.display_context_message("Attack Missed!")
 
 
-    def display_attack_overlay(self, persist):
+    def display_attack_overlay(self):
         attack_overlay = AttackOverlay()
 
-        inner = movement.bfs(persist, (self.position.x, self.position.y), self.stats.min_attack_range - 1, 0, 9)
-        outer = movement.bfs(persist, (self.position.x, self.position.y), self.stats.max_attack_range, 0, 9)
+        inner = movement.bfs((self.position.x, self.position.y), self.stats.min_attack_range - 1, 0, 9)
+        outer = movement.bfs((self.position.x, self.position.y), self.stats.max_attack_range, 0, 9)
         difference = set(outer) - set(inner)
 
         for mov in difference:
-            persist.highlights[mov[1]][mov[0]] = attack_overlay
-            persist.screen.render_square(persist, mov[0], mov[1])        
+            self.store.highlights[mov[1]][mov[0]] = attack_overlay
+            self.store.screen.render_square(mov[0], mov[1])        
 
 
     ####################################
@@ -155,26 +157,26 @@ class Unit(pg.sprite.Sprite):
     ####################################
 
     # TODO: Alter idle animations to allow more than one frame
-    def idle_animation(self, persist):
+    def idle_animation(self):
         if self.images.is_idle_1:
             self.image = self.images.idle_2
         else:
             self.image = self.images.idle_1
 
         self.images.is_idle_1 = not self.images.is_idle_1
-        persist.screen.render_terrain(persist, self.position.x, self.position.y)
-        persist.screen.render_unit(persist, self.position.x, self.position.y)
+        self.store.screen.render_terrain(self.position.x, self.position.y)
+        self.store.screen.render_unit(self.position.x, self.position.y)
 
     
-    def check_for_death(self, persist):
+    def check_for_death(self):
         if self.stats.current_hp <= 0:
             print('Dead')
-            persist.units[self.position.y][self.position.x] = 0
-            persist.screen.render_square(persist, self.position.x, self.position.y)
+            self.store.units[self.position.y][self.position.x] = 0
+            self.store.screen.render_square(self.position.x, self.position.y)
             # TODO: Look for cleaner way to do this, a conditional based on a flag on the unit should be quicker than iterating through an extra list
-            persist.enemys.remove(self)
-            persist.players.remove(self)
-            persist.all_units.remove(self)
+            self.store.enemys.remove(self)
+            self.store.players.remove(self)
+            self.store.all_units.remove(self)
             
 
 ##################

@@ -1,5 +1,6 @@
 import pygame as pg
 from .state import State
+from ..store import Store
 
 class EndLevel(State):
     """
@@ -11,17 +12,16 @@ class EndLevel(State):
         self.quit = False
         self.next_state = None
         self.screen_rect = pg.display.get_surface().get_rect()
-        self.persist = {}
+        self.store = Store.instance()
         self.font = pg.font.Font(None, 24)
 
-    def startup(self, persistent):
+    def startup(self):
         """
         Called when a state resumes being active.
         Allows information to be passed between states.
 
         persistent: a dict passed from state to state
         """
-        self.persist = persistent
 
         print("Success! Level Complete!")
         self.done = True
@@ -44,7 +44,7 @@ class EndLevel(State):
         """
         pass
 
-    def draw(self, surface):
+    def draw(self):
         """
         Draw everything to the screen.
         """

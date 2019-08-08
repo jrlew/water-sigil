@@ -1,11 +1,15 @@
+from .store import Store
+
+store = Store.instance()
+
+
 class Node():
     def __init__(self, parent, pos, mov, terrain_map):
         self.terrain_map = terrain_map
         self.parent = parent
         self.position = pos
         self.remaining_movement = mov
-        self.children = self.get_children(terrain_map)
-        
+        self.children = self.get_children(terrain_map)        
 
     # TODO: Simplify this
     def get_children(self, terrain_map):
@@ -38,14 +42,14 @@ def valid_node(node, closed_set, lower_bounds, upper_bounds):
             node.position[1] <= upper_bounds and
             not node.position in closed_set)
 
-# TODO: Name this better, add in terrain movement cost, use persist to grab min/max, fix inital movement value hack
-def bfs(persist, start, movement, min, max):
+# TODO: Name this better, add in terrain movement cost, use store to grab min/max, fix inital movement value hack
+def bfs(start, movement, min, max):
     current_depth = []
     next_depth = []
     closed_set = set()
 
     # IDK why it needs + 1, probably should figure that out...
-    current_depth.append(Node(None, start, movement + 1, persist.terrain))
+    current_depth.append(Node(None, start, movement + 1, store.terrain))
 
     while True:
         current_node = current_depth.pop(0)

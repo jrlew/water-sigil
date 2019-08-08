@@ -6,21 +6,21 @@ import pygame
 from .units.unit import Unit, Position
 from .movement import bfs
 from .player import Player
-
+from .store import Store
 
 class Enemy(Unit):
     def __init__(self, init_pos, job):
         Unit.__init__(self, init_pos, job.info)
+        self.store = Store.instance()
 
 
-    def move_towards_player(self, persist):
-        possible = bfs(persist, (self.position.x, self.position.y), self.stats.movement + self.stats.max_attack_range, 0, 10)
+    def move_towards_player(self):
+        possible = bfs((self.position.x, self.position.y), self.stats.movement + self.stats.max_attack_range, 0, 10)
         for entry in possible:
-            if isinstance(persist.units[entry[1]][entry[0]], Player):
+            if isinstance(self.store.units[entry[1]][entry[0]], Player):
                 print('Gottem', entry)
                 move_to = self.find_adjacent_square((self.position.x, self.position.y), entry)
-                self.move_to_position(persist, Position(move_to))
-                # persist.screen.render_square(persist, self.prev_position.x, self.prev_position.y)
+                self.move_to_position(Position(move_to))
                 break
 
 

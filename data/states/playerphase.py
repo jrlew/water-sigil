@@ -1,6 +1,7 @@
 import pygame as pg
 from .state import State
 from ..player import Player
+from ..store import Store
 
 # TODO: Find a better name for this
 # Phase for Non-Paired Indicator
@@ -11,23 +12,22 @@ class PlayerPhase(State):
         self.quit = False
         self.next_state = None
         self.screen_rect = pg.display.get_surface().get_rect()
-        self.persist = {}
+        self.store = Store.instance()
         self.font = pg.font.Font(None, 24)
 
-    def startup(self, persistent):
+    def startup(self):
         print('Player Phase Beginning')
-        self.persist = persistent
 
-        for unit in self.persist.players:
+        for unit in self.store.players:
             if unit.stats.remaining_movement:
                 unit.active = True
             else:
                 unit.active = False
-        for unit in self.persist.enemys:
+        for unit in self.store.enemys:
             unit.active = False
 
         playerTurn = False
-        for player in self.persist.players:
+        for player in self.store.players:
             if player.stats.remaining_movement > 0:
                 playerTurn = True
 
@@ -39,31 +39,31 @@ class PlayerPhase(State):
     def get_event(self, event):
         if event.type == pg.KEYUP:
             if event.key == pg.K_UP:
-                self.persist.indicator.up()
+                self.store.indicator.up()
             elif event.key == pg.K_DOWN:
-                self.persist.indicator.down()
+                self.store.indicator.down()
             elif event.key == pg.K_RIGHT:
-                self.persist.indicator.right()
+                self.store.indicator.right()
             elif event.key == pg.K_LEFT:
-                self.persist.indicator.left()
+                self.store.indicator.left()
             elif event.key == pg.K_RETURN:
-                if isinstance(self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x], Player):
-                    self.persist.paired_unit = self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x]
-                    print(self.persist.paired_unit.stats.name)
+                if isinstance(self.store.units[self.store.indicator.position.y][self.store.indicator.position.x], Player):
+                    self.store.paired_unit = self.store.units[self.store.indicator.position.y][self.store.indicator.position.x]
+                    print(self.store.paired_unit.stats.name)
                     self.done = True
                     self.next_state = "UnitPhase"
 
     def update(self, dt):
         pass
 
-    def draw(self, screen):
+    def draw(self):
         # TODO: Clean up duplication between player phases
         # Resetting old square and setting up new square
-        screen.render_square(self.persist, self.persist.indicator.prev_position.x, self.persist.indicator.prev_position.y)
-        screen.render_square(self.persist, self.persist.indicator.position.x, self.persist.indicator.position.y)
+        self.store.screen.render_square(self.store.indicator.prev_position.x, self.store.indicator.prev_position.y)
+        self.store.screen.render_square(self.store.indicator.position.x, self.store.indicator.position.y)
 
         # Clear old info and setup new
-        screen.clear_info_pane()
-        screen.display_terrain_info(self.persist.terrain[self.persist.indicator.position.y][self.persist.indicator.position.x])
-        if not self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x] == 0:
-            screen.display_unit_info(self.persist.units[self.persist.indicator.position.y][self.persist.indicator.position.x].stats)
+        self.store.screen.clear_info_pane()
+        self.store.screen.display_terrain_info(self.store.terrain[self.store.indicator.position.y][self.store.indicator.position.x])
+        if not self.store.units[self.store.indicator.position.y][self.store.indicator.position.x] == 0:
+            self.store.screen.display_unit_info(self.store.units[self.store.indicator.position.y][self.store.indicator.position.x].stats)

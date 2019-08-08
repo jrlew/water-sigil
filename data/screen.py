@@ -66,8 +66,8 @@ class Screen():
         pygame.draw.rect(self.display, WHITE, [475, 320, 4, 40], 0)
 
 
-    def init_all(self, persist):
-        self.init_screen(persist.terrain)
+    def init_all(self):
+        self.init_screen(self.store.terrain)
         self.init_info_pane()
         self.init_context_menu()
 
@@ -121,30 +121,30 @@ class Screen():
     # Render Functions #
     ####################
 
-    def render_unit(self, persist, x, y):
-        self.display.blit(persist.units[y][x].image, (x * PIXEL_SIZE, y * PIXEL_SIZE))
+    def render_unit(self, x, y):
+        self.display.blit(self.store.units[y][x].image, (x * PIXEL_SIZE, y * PIXEL_SIZE))
 
 
-    def render_terrain(self, persist, x, y):
-        self.display.blit(persist.terrain[y][x].image, (x * PIXEL_SIZE, y * PIXEL_SIZE))
+    def render_terrain(self, x, y):
+        self.display.blit(self.store.terrain[y][x].image, (x * PIXEL_SIZE, y * PIXEL_SIZE))
 
 
-    def render_highlight(self, persist, x, y):
-        self.display.blit(persist.highlights[y][x].image, (x * PIXEL_SIZE, y * PIXEL_SIZE))
+    def render_highlight(self, x, y):
+        self.display.blit(self.store.highlights[y][x].image, (x * PIXEL_SIZE, y * PIXEL_SIZE))
 
 
-    def render_indicator(self, persist):
-        self.display.blit(persist.indicator.image, (persist.indicator.position.x * PIXEL_SIZE, persist.indicator.position.y * PIXEL_SIZE))        
+    def render_indicator(self):
+        self.display.blit(self.store.indicator.image, (self.store.indicator.position.x * PIXEL_SIZE, self.store.indicator.position.y * PIXEL_SIZE))        
     
 
-    def render_square(self, persist, x, y):
-        self.render_terrain(persist, x, y)
+    def render_square(self, x, y):
+        self.render_terrain( x, y)
 
-        if persist.units[y][x]:
-            self.render_unit(persist, x, y)
+        if self.store.units[y][x]:
+            self.render_unit( x, y)
 
-        if persist.highlights[y][x]:
-            self.render_highlight(persist, x, y)
+        if self.store.highlights[y][x]:
+            self.render_highlight( x, y)
 
-        if persist.indicator.position.x == x and persist.indicator.position.y == y:
-            self.render_indicator(persist)
+        if self.store.indicator.position.x == x and self.store.indicator.position.y == y:
+            self.render_indicator()

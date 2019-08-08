@@ -1,5 +1,6 @@
 import sys
 import pygame as pg
+from .store import Store
 
 from .customevents import CustomEvents
 
@@ -23,13 +24,14 @@ class Game(object):
         """
         print('Is Game used?')
         self.done = False
-        self.screen = screen
         self.clock = pg.time.Clock()
         self.fps = 60
         self.states = states
         self.state_name = start_state
         self.state = self.states[self.state_name]()
-        self.custom_events = CustomEvents() # TODO: determine if this should go in persist
+        self.custom_events = CustomEvents()
+        self.store = Store.instance()
+        self.store.screen = screen
 
     def event_loop(self):
         """Events are passed for handling to the current state."""
@@ -38,7 +40,7 @@ class Game(object):
                 self.quit = True
                 sys.exit()
             elif event.type == self.custom_events.UPDATE_ANIMATION:
-                self.state.persist.all_units.update(self.state.persist)
+                self.store.all_units.update()
             else:
                 self.state.get_event(event)
 
@@ -48,10 +50,8 @@ class Game(object):
         next_state = self.state.next_state
         self.state.done = False
         self.state_name = next_state
-        persistent = self.state.persist
-        persistent.screen = self.screen # TODO: Orgaization of persist needs to be better. This shouldn't need to be assigned on each state change
         self.state = self.states[self.state_name]()
-        self.state.startup(persistent)
+        self.state.startup()
 
     def update(self, dt):
         """
@@ -66,7 +66,7 @@ class Game(object):
 
     def draw(self):
         """Pass display surface to active state for drawing."""
-        self.state.draw(self.screen)
+        self.state.draw()
 
     def run(self):
         """

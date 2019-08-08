@@ -1,5 +1,6 @@
 import pygame as pg
 from .state import State
+from ..store import Store
 
 
 class LevelSelect(State):
@@ -12,13 +13,13 @@ class LevelSelect(State):
         self.quit = False
         self.next_state = None
         self.screen_rect = pg.display.get_surface().get_rect()
-        self.persist = {}
+        self.store = Store.instance()
         self.font = pg.font.Font(None, 24)
 
-    def startup(self, persistent):
+    def startup(self):
 
 
-        screen.display_context_message("> Level One     Level Two")
+        self.store.screen.display_context_message("> Level One     Level Two")
         pg.display.update()
 
         indicator_state = True
@@ -31,10 +32,10 @@ class LevelSelect(State):
                     if event.key == pg.K_UP or event.key == pg.K_DOWN:
                         indicator_state = not indicator_statev
                         if indicator_state:
-                            screen.display_context_message(
+                            self.store.screen.display_context_message(
                                 ">Level One    Level Two")
                         else:
-                            screen.display_context_message(
+                            self.store.screen.display_context_message(
                                 " Level One   >Level Two")
                         pg.display.update()
                     if event.key == pg.K_RETURN:
@@ -61,7 +62,7 @@ class LevelSelect(State):
         """
         pass
 
-    def draw(self, surface):
+    def draw(self):
         """
         Draw everything to the screen.
         """
