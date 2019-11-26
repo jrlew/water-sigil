@@ -33,6 +33,9 @@ class Game(object):
         self.store = Store.instance()
         self.store.screen = screen
 
+        self.state = self.states[self.state_name]()
+        self.state.startup()
+
     def event_loop(self):
         """Events are passed for handling to the current state."""
         for event in pg.event.get():

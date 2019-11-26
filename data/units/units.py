@@ -1,7 +1,8 @@
-from .archer import Archer
-from .knight import Knight
-from .soldier import Soldier
-from .warden import Warden
+from .classes.archer import Archer
+from .classes.knight import Knight
+from .classes.soldier import Soldier
+from .classes.warden import Warden
+
 
 class Units():
     archer = Archer

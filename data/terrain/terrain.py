@@ -1,11 +1,5 @@
-"""
-Placeholder
-"""
-
-
 import os
 import pygame
-
 
 class Terrain():
     def __init__(self, type_name, path_to_image, def_adjustment, evasion_adjustment):

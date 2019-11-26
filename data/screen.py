@@ -3,6 +3,7 @@ Placeholder
 """
 
 import pygame
+
 from .store import Store
 
 size = width, height = 480, 360
@@ -134,7 +135,11 @@ class Screen():
 
 
     def render_indicator(self):
-        self.display.blit(self.store.indicator.image, (self.store.indicator.position.x * PIXEL_SIZE, self.store.indicator.position.y * PIXEL_SIZE))        
+        self.display.blit(self.store.indicator.image, (self.store.indicator.position.x * PIXEL_SIZE, self.store.indicator.position.y * PIXEL_SIZE))
+
+
+    def render_image(self, image, x, y):
+        self.display.blit(image, (x, y))
     
 
     def render_square(self, x, y):

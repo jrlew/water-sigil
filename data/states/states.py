@@ -1,14 +1,15 @@
-from .levelinit import LevelInit
-from .playerphase import PlayerPhase
-from .unitphase import UnitPhase
-from .unitattack import UnitAttackPhase
 from .enemyphase import EnemyPhase
-
+from .levelinit import LevelInit
+from .levelselect import LevelSelect
+from .playerphase import PlayerPhase
+from .unitattack import UnitAttackPhase
+from .unitphase import UnitPhase
 
 states = {
-    "Level_Init": LevelInit,
-    "Player_Phase": PlayerPhase,
-    "UnitPhase": UnitPhase,
-    "UnitAttackPhase": UnitAttackPhase,
     "EnemyPhase": EnemyPhase,
+    "Level_Init": LevelInit,
+    "Level_Select": LevelSelect,
+    "Player_Phase": PlayerPhase,
+    "UnitAttackPhase": UnitAttackPhase,
+    "UnitPhase": UnitPhase,
 }

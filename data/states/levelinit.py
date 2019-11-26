@@ -1,11 +1,11 @@
 import pygame as pg
-from .state import State
-from ..store import Store
 
 from ..indicator import Indicator
-
 #TODO: fix these names....
 from ..levels.two import level_params
+from ..store import Store
+from .state import State
+
 
 # TODO: This should go away
 # TODO: This and Level1 should be merged into game.py that exits back to the level select

@@ -1,7 +1,9 @@
 import pygame as pg
-from .state import State
-from ..player import Player
+
 from ..store import Store
+from ..units.player import Player
+from .state import State
+
 
 # TODO: Find a better name for this
 # Phase for Non-Paired Indicator

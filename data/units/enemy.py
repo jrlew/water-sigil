@@ -3,10 +3,12 @@ Placeholder
 """
 
 import pygame
-from .units.unit import Unit, Position
-from .movement import bfs
+
+from ..movement import bfs
+from ..store import Store
 from .player import Player
-from .store import Store
+from .unit import Position, Unit
+
 
 class Enemy(Unit):
     def __init__(self, init_pos, job):

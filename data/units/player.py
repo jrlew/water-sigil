@@ -3,8 +3,10 @@ Placeholder
 """
 
 import os
+
 import pygame
-from .units.unit import Unit
+
+from .unit import Unit
 
 
 class Player(Unit):

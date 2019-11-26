@@ -1,3 +1,5 @@
+import pygame as pg
+
 from .tools.singleton import Singleton
 
 
@@ -18,6 +20,6 @@ class Store():
 
         self.players = None
         self.enemys = None
-        self.all_units = None
+        self.all_units = pg.sprite.Group()
 
         self.paired_unit = None

@@ -1,8 +1,10 @@
 import pygame as pg
-from ..enemy import Enemy
-from ..units import units
-from ..units.unit import Position
+
 from ..store import Store
+from ..units import units
+from ..units.enemy import Enemy
+from ..units.unit import Position
+
 
 class UnitAttackPhase(object):
     """
@@ -83,4 +85,3 @@ class UnitAttackPhase(object):
         self.store.screen.display_terrain_info(self.store.terrain[self.store.indicator.position.y][self.store.indicator.position.x])
         if not self.store.units[self.store.indicator.position.y][self.store.indicator.position.x] == 0:
             self.store.screen.display_unit_info(self.store.units[self.store.indicator.position.y][self.store.indicator.position.x].stats)
-

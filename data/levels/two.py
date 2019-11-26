@@ -1,7 +1,7 @@
 import pygame as pg
 
-# TODO: Wrap classes better to avoid so many imports
-from ..terrain.plain import Plain
+from ..terrain.forest import Forest
+from ..terrain.fortress import Fortress
 from ..terrain.mountain import Mount
 from ..terrain.mountainbottom import MountBottom
 from ..terrain.mountainbottomleftgrass import MountBottomLeftGrass
@@ -12,13 +12,10 @@ from ..terrain.mountainleftmountain import MountLeftMount
 from ..terrain.mountainrightgrass import MountRightGrass
 from ..terrain.mountainrightmountain import MountRightMount
 from ..terrain.mountaintopleftgrass import MountTopLeftGrass
-from ..terrain.forest import Forest
-from ..terrain.fortress import Fortress
-
+from ..terrain.plain import Plain
+from ..units.enemy import Enemy
+from ..units.player import Player
 from ..units.units import Units
-
-from ..enemy import Enemy
-from ..player import Player
 
 PLAIN = Plain()
 MOUNT = Mount()
