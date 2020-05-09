@@ -32,26 +32,6 @@ class Unit(pg.sprite.Sprite):
     # Movement functions #
     ######################
 
-    def up(self):
-        self.update_prev_position()
-        self.position.y -= 1
-        self.update_location()
-
-    def down(self):
-        self.update_prev_position()
-        self.position.y += 1
-        self.update_location()
-
-    def left(self):
-        self.update_prev_position()
-        self.position.x -= 1
-        self.update_location()
-
-    def right(self):
-        self.update_prev_position()
-        self.position.x += 1
-        self.update_location()
-
     def update_prev_position(self):
         self.prev_position.y = int(self.position.y)
         self.prev_position.x = int(self.position.x)
