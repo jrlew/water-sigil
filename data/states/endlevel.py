@@ -1,12 +1,10 @@
 import pygame as pg
-from .state import State
+
 from ..store import Store
+from .state import State
+
 
 class EndLevel(State):
-    """
-    Parent class for individual game states to inherit from. 
-    """
-
     def __init__(self):
         self.done = False
         self.quit = False
@@ -16,36 +14,15 @@ class EndLevel(State):
         self.font = pg.font.Font(None, 24)
 
     def startup(self):
-        """
-        Called when a state resumes being active.
-        Allows information to be passed between states.
-
-        persistent: a dict passed from state to state
-        """
-
         print("Success! Level Complete!")
         self.done = True
-        self.next_state = "Leve"
-
-
+        self.next_state = "Level_Select"
 
     def get_event(self, event):
-        """
-        Handle a single event passed by the Game object.
-        """
         pass
 
     def update(self, dt):
-        """
-        Update the state. Called by the Game object once
-        per frame. 
-
-        dt: time since last frame
-        """
         pass
 
     def draw(self):
-        """
-        Draw everything to the screen.
-        """
         pass

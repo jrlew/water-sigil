@@ -1,6 +1,7 @@
 import pygame as pg
+
 from ..store import Store
-from ..store import Store
+
 
 class State(object):
     """
@@ -22,6 +23,7 @@ class State(object):
 
         persistent: a dict passed from state to state
         """
+
     def get_event(self, event):
         """
         Handle a single event passed by the Game object.

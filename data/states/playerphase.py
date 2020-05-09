@@ -10,12 +10,6 @@ from .state import State
 class PlayerPhase(State):
     def __init__(self):
         super(PlayerPhase, self).__init__()
-        self.done = False
-        self.quit = False
-        self.next_state = None
-        self.screen_rect = pg.display.get_surface().get_rect()
-        self.store = Store.instance()
-        self.font = pg.font.Font(None, 24)
 
     def startup(self):
         print('Player Phase Beginning')

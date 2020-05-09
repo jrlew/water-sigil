@@ -158,12 +158,10 @@ class Unit(pg.sprite.Sprite):
     # TODO: Alter idle animations to allow more than one frame
 
     def idle_animation(self):
-        if self.images.is_idle_1:
-            self.image = self.images.idle_2
-        else:
-            self.image = self.images.idle_1
+        self.images.idle_image_index = (
+            self.images.idle_image_index + 1) % self.images.idle_images_length
+        self.image = self.images.idle_images[self.images.idle_image_index]
 
-        self.images.is_idle_1 = not self.images.is_idle_1
         self.store.screen.render_terrain(self.position.x, self.position.y)
         self.store.screen.render_unit(self.position.x, self.position.y)
 
@@ -206,8 +204,11 @@ class Position():
 
 class Images():
     def __init__(self, info):
-        self.is_idle_1 = True
-        self.idle_1 = image.load_png(info["idle_1_path"])
-        self.idle_2 = image.load_png(info["idle_2_path"])
+        self.idle_images = []
+        for path in info["idle_images"]:
+            self.idle_images.append(image.load_png(path))
 
-        self.image = self.idle_1
+        self.idle_image_index = 0
+        self.idle_images_length = len(self.idle_images)
+
+        self.image = self.idle_images[self.idle_image_index]
