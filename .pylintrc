@@ -217,7 +217,7 @@ class-naming-style=PascalCase
 #class-rgx=
 
 # Naming style matching correct constant names
-const-naming-style=
+const-naming-style=any
 
 # Regular expression matching correct constant names. Overrides const-naming-
 # style
@@ -225,7 +225,7 @@ const-naming-style=
 
 # Minimum line length for functions/classes that require docstrings, shorter
 # ones are exempt.
-docstring-min-length=50
+# docstring-min-length=50
 
 # Naming style matching correct function names
 function-naming-style=snake_case
@@ -539,6 +539,10 @@ known-standard-library=
 # Force import order to recognize a module as part of a third party library.
 known-third-party=enchant
 
+missing-docstring=False
+
+[TYPECHECK]
+ignored-classes=Store
 
 [EXCEPTIONS]
 

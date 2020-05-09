@@ -5,8 +5,6 @@ from .tools.singleton import Singleton
 
 @Singleton
 class Store():
-    # self.__instance
-
     def __init__(self):
         self.screen = None
 

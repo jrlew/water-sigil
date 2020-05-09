@@ -16,6 +16,7 @@ class Singleton:
 
     def __init__(self, decorated):
         self._decorated = decorated
+        self._instance = None
 
     def instance(self):
         """
@@ -24,9 +25,9 @@ class Singleton:
         On all subsequent calls, the already created instance is returned.
 
         """
-        try:
+        if self._instance:
             return self._instance
-        except AttributeError:
+        else:
             self._instance = self._decorated()
             return self._instance
 
